@@ -11,7 +11,7 @@ This library was written in TypeScript but will also work in projects written in
 Add it to your project via:
 
 ```
-npm in --save csharp-binary-stream
+npm i --save csharp-binary-stream
 ```
 
 ### Documentation
