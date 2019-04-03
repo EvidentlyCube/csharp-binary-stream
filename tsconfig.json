@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"outDir": "./dist/",
+		"target": "es2017",
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"noImplicitAny": true,
+		"declaration": true,
+		"allowJs": false,
+		"strict": true,
+		"strictNullChecks": false,
+		"rootDir": "src"
+	},
+	"include": [
+		"./src"
+	],
+	"exclude": [
+		"node_modules",
+		".idea"
+	]
+}

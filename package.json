@@ -1,0 +1,50 @@
+{
+  "name": "csharp-binary-stream",
+  "version": "0.0.1",
+  "description": "Library compatible with C#'s BinaryReader class",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "mocha -r ts-node/register test/**/*.test.ts",
+    "clean": "rm -rf dist",
+    "build": "tsc",
+    "docs": "typedoc --options typedoc.ts",
+    "lint": "eslint test/**/*.ts src/**/*.ts",
+    "lint-fix": "eslint --fix test/**/*.ts src/**/*.ts",
+    "prepare-publish": "npm run clean && npm run lint && npm run build && npm run docs"
+  },
+  "keywords": [
+    "csharp",
+    "compatibility",
+    "binary",
+    "reader",
+    "stream"
+  ],
+  "author": "Maurycy Zarzycki (Evidently Cube)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:EvidentlyCube/chsarp-binary-stream.git"
+  },
+  "devDependencies": {
+    "@types/big-integer": "0.0.31",
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^7.10.5",
+    "@typescript-eslint/eslint-plugin": "^1.5.0",
+    "@typescript-eslint/parser": "^1.5.0",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "mocha": "^6.0.2",
+    "ts-node": "^8.0.3",
+    "typedoc": "^0.14.2",
+    "typedoc-twilio-theme": "^1.0.0",
+    "typescript": "^3.4.1"
+  },
+  "dependencies": {
+    "big-integer": "^1.6.43"
+  }
+}
