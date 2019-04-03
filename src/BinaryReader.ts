@@ -452,11 +452,11 @@ export class BinaryReader
 	 */
 	public readCharBytes(bytesToRead: number, encoding: Encoding): string
 	{
-		if (isNaN(bytesToRead) || (typeof bytesToRead !== 'string' && typeof bytesToRead !== 'number')) {
+		if (isNaN(bytesToRead)) {
 			throw new InvalidArgumentError('`charactersToRead` is not a number', 'bytesToRead', bytesToRead);
 		}
 
-		bytesToRead = Math.floor(parseFloat(bytesToRead as any));
+		bytesToRead = Math.floor(bytesToRead);
 
 		if (bytesToRead < 1) {
 			throw new InvalidArgumentError('`charactersToRead` cannot be less than 0', 'bytesToRead', bytesToRead);
