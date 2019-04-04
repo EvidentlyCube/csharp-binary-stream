@@ -2,63 +2,7 @@ import * as fs from 'fs';
 import {expect} from 'chai';
 import {BinaryReader} from "../src";
 import {combineBuffers} from "./common";
-
-type TestCallback = (data: BinaryReader) => void;
-
-interface TestCallbackDictionary
-{
-	[index: string]: TestCallback;
-}
-
-interface TestCallbackDictionaryDictionary
-{
-	[index: string]: TestCallbackDictionary;
-}
-
-interface TestFileDictionary
-{
-	[index: string]: string;
-}
-
-interface TestFileDictionaryDictionary
-{
-	[index: string]: TestFileDictionary;
-}
-
-interface StreamTypesDictionary
-{
-	[index: string]: ((buffer: Buffer) => BinaryReader);
-}
-
-const testsDirectory = __dirname + "/fixtures";
-
-function buildTestsFilesIndex(): TestFileDictionaryDictionary
-{
-	const tests: TestFileDictionaryDictionary = {};
-
-	fs.readdirSync(testsDirectory).forEach(file =>
-	{
-		if (file.indexOf("test.common") !== 0) {
-			return;
-		}
-
-		const bits = file.split('.');
-		if (bits.length !== 5) {
-			throw new Error("There should be no file in test/fixtures/ directory that does not have four dots in its name.");
-		}
-
-		const type = bits[2];
-		const testName = bits[3];
-
-		if (!tests[type]) {
-			tests[type] = {};
-		}
-
-		tests[type][testName] = file;
-	});
-
-	return tests;
-}
+import {buildTestsFilesIndex, FixturesDirectory, ReaderStreamTypesDictionary, ReaderTestCallbackDictionaryDictionary} from "./fixtureCommon";
 
 function assertSimilarFloats(smaller: number, bigger: number): void
 {
@@ -78,7 +22,7 @@ function assertSimilarFloats(smaller: number, bigger: number): void
 	expect(factor).to.be.closeTo(1, 0.001);
 }
 
-function buildTestExecutors(): TestCallbackDictionaryDictionary
+function buildTestExecutors(): ReaderTestCallbackDictionaryDictionary
 {
 	return {
 		bool: {
@@ -380,10 +324,10 @@ function buildTestExecutors(): TestCallbackDictionaryDictionary
 
 describe("BinaryReader, number fixture tests", () =>
 {
-	const testFileIndex = buildTestsFilesIndex();
+	const testFileIndex = buildTestsFilesIndex("test.common");
 	const testExecutors = buildTestExecutors();
 
-	const streamTypes: StreamTypesDictionary = {
+	const streamTypes: ReaderStreamTypesDictionary = {
 		'Exactly matching ArrayBuffer': (buffer: Buffer) => new BinaryReader(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)),
 		'Uint8Array with exactly matching buffer inside': (buffer: Buffer) =>
 		{
@@ -438,7 +382,7 @@ describe("BinaryReader, number fixture tests", () =>
 							expect(testExecutors).to.have.any.keys(type);
 							expect(testExecutors[type]).to.have.any.keys(testName);
 
-							const buffer = fs.readFileSync(`${testsDirectory}/${testPath}`);
+							const buffer = fs.readFileSync(`${FixturesDirectory}/${testPath}`);
 							const reader = binaryReaderBuilder(buffer);
 							testExecutors[type][testName].call(null, reader);
 						});

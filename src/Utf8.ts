@@ -29,6 +29,37 @@ interface Utf8ReadResult
 	finalPosition: number;
 }
 
+export function writeUtf8StringFromCodePoints(buffer: number[], position: number, dataToWrite: number[] | string): number
+{
+	if (typeof dataToWrite === "string") {
+		dataToWrite = Array.from(dataToWrite).map(x => x.codePointAt(0));
+	}
+
+	for(let i = 0; i < dataToWrite.length; i++) {
+		const codepoint = dataToWrite[i];
+		if (codepoint < 0x80) {
+			buffer[position++] = codepoint;
+
+		} else if (codepoint < 0x800) {
+			buffer[position++] = 0xc0 | (codepoint >> 6);
+			buffer[position++] = 0x80 | (codepoint & 0x3f);
+		}
+		else if (codepoint < 0x10000) {
+			buffer[position++] = 0xe0 | (codepoint >> 12);
+			buffer[position++] = 0x80 | ((codepoint >> 6) & 0x3f);
+			buffer[position++] = 0x80 | (codepoint & 0x3f);
+		}
+		else {
+			buffer[position++] = 0xf0 | (codepoint >> 18);
+			buffer[position++] = 0x80 | ((codepoint >> 12) & 0x3f);
+			buffer[position++] = 0x80 | ((codepoint >> 6) & 0x3f);
+			buffer[position++] = 0x80 | (codepoint & 0x3f);
+		}
+	}
+
+	return position;
+}
+
 /** @ignore */
 export function readUtf8StringFromBytes(bytes: Uint8Array, position: number, maxCharactersToRead: number = Number.MAX_SAFE_INTEGER, maxBytesToRead: number = Number.MAX_SAFE_INTEGER): Utf8ReadResult
 {

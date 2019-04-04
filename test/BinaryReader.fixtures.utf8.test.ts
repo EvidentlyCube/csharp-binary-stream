@@ -2,89 +2,9 @@ import * as fs from 'fs';
 import {expect} from 'chai';
 import {BinaryReader, Encoding} from "../src";
 import {combineBuffers} from "./common";
+import {buildTestsFilesIndex, FixturesDirectory, getTestStrings, ReaderStreamTypesDictionary, ReaderTestCallbackDictionaryDictionary} from "./fixtureCommon";
 
-type TestCallback = (data: BinaryReader) => void;
-
-interface TestCallbackDictionary
-{
-	[index: string]: TestCallback;
-}
-
-interface TestCallbackDictionaryDictionary
-{
-	[index: string]: TestCallbackDictionary;
-}
-
-interface TestFileDictionary
-{
-	[index: string]: string;
-}
-
-interface TestFileDictionaryDictionary
-{
-	[index: string]: TestFileDictionary;
-}
-
-interface StreamTypesDictionary
-{
-	[index: string]: ((buffer: Buffer) => BinaryReader);
-}
-
-const testsDirectory = __dirname + "/fixtures";
-
-function buildTestsFilesIndex(): TestFileDictionaryDictionary
-{
-	const tests: TestFileDictionaryDictionary = {};
-
-	fs.readdirSync(testsDirectory).forEach(file =>
-	{
-		if (file.indexOf("test.utf8") !== 0) {
-			return;
-		}
-
-		const bits = file.split('.');
-		if (bits.length !== 5) {
-			throw new Error("There should be no file in test/fixtures/ directory that does not have four dots in its name.");
-		}
-
-		const type = bits[2];
-		const testName = bits[3];
-
-		if (!tests[type]) {
-			tests[type] = {};
-		}
-
-		tests[type][testName] = file;
-	});
-
-	return tests;
-}
-
-function getTestStrings(): [string, string, string]
-{
-	const encodedString = ""
-		+ "%E2%8A%86%E2%84%95%E2%82%80%E2%84%9A%E2%84%9D" // "scienceCharacters" = "⊆ℕ₀ℚℝ"
-		+ "%C9%94%C9%9B%C9%99" // "IPA" = "ɔɛə"
-		+ "%CE%B3%CE%BD%CF%89%CF%81%E1%BD%B7%CE%B6" // "greek" = "γνωρίζ"
-		+ "%D0%94%D0%B5%D1%81" // "russian" = "Дес"
-		+ "%E0%B9%81%E0%B8%9C%E0%B9%88" // "thai" = "แผ่"
-		+ "%E1%8A%A5%E1%8A%95%E1%8B%B0%E1%8A%A0%E1%89%A3%E1%89%B4" // "ahmaric" = "እንደአባቴ"
-		+ "%E1%9B%92%E1%9A%A2%E1%9B%9E%E1%9B%96" // "runes" = "ᛒᚢᛞᛖ"
-		+ "%E2%A0%B9%E2%A0%BB%E2%A0%91" // "braille" = "⠹⠻⠑"
-		+ "%E3%82%B3%E3%83%B3" // "japanese" = "コン"
-		+ "%E2%94%8F%E2%94%AF%E2%94%93%E2%96%89%E2%94%9C" // "boxes" = "┏┯┓▉├"
-		+ "";
-
-	const decodedString = decodeURI(encodedString);
-
-	return [
-		decodedString,
-		decodedString.repeat(10),
-		decodedString.repeat(200),
-	];
-}
-
-function buildTestExecutors(): TestCallbackDictionaryDictionary
+function buildTestExecutors(): ReaderTestCallbackDictionaryDictionary
 {
 	const testStrings = getTestStrings();
 	return {
@@ -148,10 +68,10 @@ function buildTestExecutors(): TestCallbackDictionaryDictionary
 
 describe("BinaryReader, string UTF-8 encoding fixture tests", () =>
 {
-	const testFileIndex = buildTestsFilesIndex();
+	const testFileIndex = buildTestsFilesIndex("test.utf8");
 	const testExecutors = buildTestExecutors();
 
-	const streamTypes: StreamTypesDictionary = {
+	const streamTypes: ReaderStreamTypesDictionary = {
 		'Exactly matching ArrayBuffer': (buffer: Buffer) => new BinaryReader(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)),
 		'Uint8Array with exactly matching buffer inside': (buffer: Buffer) =>
 		{
@@ -206,7 +126,7 @@ describe("BinaryReader, string UTF-8 encoding fixture tests", () =>
 							expect(testExecutors).to.have.any.keys(type, `Failed to find test group definition for fixture 'test.utf8.${type}.${testName}.bin'`);
 							expect(testExecutors[type]).to.have.any.keys(testName, `Failed to find test definition for fixture 'test.utf8.${type}.${testName}.bin'`);
 
-							const buffer = fs.readFileSync(`${testsDirectory}/${testPath}`);
+							const buffer = fs.readFileSync(`${FixturesDirectory}/${testPath}`);
 							const reader = binaryReaderBuilder(buffer);
 							testExecutors[type][testName].call(null, reader);
 						});
