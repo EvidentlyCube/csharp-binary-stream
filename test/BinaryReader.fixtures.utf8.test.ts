@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import {expect} from 'chai';
 import {BinaryReader, Encoding} from "../src";
+import {combineBuffers} from "./common";
 
 type TestCallback = (data: BinaryReader) => void;
 
@@ -22,6 +23,11 @@ interface TestFileDictionary
 interface TestFileDictionaryDictionary
 {
 	[index: string]: TestFileDictionary;
+}
+
+interface StreamTypesDictionary
+{
+	[index: string]: ((buffer: Buffer) => BinaryReader);
 }
 
 const testsDirectory = __dirname + "/fixtures";
@@ -89,37 +95,43 @@ function buildTestExecutors(): TestCallbackDictionaryDictionary
 			'fourByte': reader => expect(reader.readChar(Encoding.Utf8)).to.equal(String.fromCodePoint(0x1F130)),
 		},
 		charArray: {
-			'oneBytes': reader => {
+			'oneBytes': reader =>
+			{
 				const expectedString = String.fromCodePoint(0x0034).repeat(4);
 				expect(reader.readChars(4, Encoding.Utf8)).to.equal(expectedString);
 				reader.position = 0;
 				expect(reader.readCharBytes(4, Encoding.Utf8)).to.equal(expectedString);
 			},
-			'twoBytes': reader => {
+			'twoBytes': reader =>
+			{
 				const expectedString = String.fromCodePoint(0x00A9).repeat(4);
 				expect(reader.readChars(4, Encoding.Utf8)).to.equal(expectedString);
 				reader.position = 0;
 				expect(reader.readCharBytes(8, Encoding.Utf8)).to.equal(expectedString);
 			},
-			'threeBytes': reader => {
+			'threeBytes': reader =>
+			{
 				const expectedString = String.fromCodePoint(0x2C01).repeat(4);
 				expect(reader.readChars(4, Encoding.Utf8)).to.equal(expectedString);
 				reader.position = 0;
 				expect(reader.readCharBytes(12, Encoding.Utf8)).to.equal(expectedString);
 			},
-			'fourBytes': reader => {
+			'fourBytes': reader =>
+			{
 				const expectedString = String.fromCodePoint(0x1F130).repeat(4);
 				expect(reader.readChars(4, Encoding.Utf8)).to.equal(expectedString);
 				reader.position = 0;
 				expect(reader.readCharBytes(16, Encoding.Utf8)).to.equal(expectedString);
 			},
-			'mixedLowHigh': reader => {
+			'mixedLowHigh': reader =>
+			{
 				const expectedString = String.fromCodePoint(0x0034, 0x00A9, 0x2C01, 0x1F130);
 				expect(reader.readChars(4, Encoding.Utf8)).to.equal(expectedString);
 				reader.position = 0;
 				expect(reader.readCharBytes(10, Encoding.Utf8)).to.equal(expectedString);
 			},
-			'mixedHighLow': reader => {
+			'mixedHighLow': reader =>
+			{
 				const expectedString = String.fromCodePoint(0x1F130, 0x2C01, 0x00A9, 0x0034);
 				expect(reader.readChars(4, Encoding.Utf8)).to.equal(expectedString);
 				reader.position = 0;
@@ -139,27 +151,66 @@ describe("BinaryReader, string UTF-8 encoding fixture tests", () =>
 	const testFileIndex = buildTestsFilesIndex();
 	const testExecutors = buildTestExecutors();
 
-	Object.entries(testFileIndex).forEach(entry =>
-	{
-		const type = entry[0];
-		const tests = entry[1];
-
-		describe(type, () =>
+	const streamTypes: StreamTypesDictionary = {
+		'Exactly matching ArrayBuffer': (buffer: Buffer) => new BinaryReader(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)),
+		'Uint8Array with exactly matching buffer inside': (buffer: Buffer) =>
 		{
+			const array = new Uint8Array(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength));
+			return new BinaryReader(array);
+		},
+		'Uint8Array padded with 3 `00` bytes around it': (buffer: Buffer) =>
+		{
+			const uintArray = new Uint8Array(combineBuffers([0x00, 0x00, 0x00], buffer, [0x00, 0x00, 0x00]));
+			const arrayBufferSlice = uintArray.buffer.slice(uintArray.byteOffset, uintArray.byteLength);
 
-			Object.entries(tests).forEach(test =>
+			return new BinaryReader(new Uint8Array(arrayBufferSlice, 3, buffer.byteLength));
+		},
+		'Uint8Array padded with 3 different bytes around it': (buffer: Buffer) =>
+		{
+			const uintArray = new Uint8Array(combineBuffers([0x3a, 0xe4, 0x4b], buffer, [0xa9, 0x43, 0x18]));
+			const arrayBufferSlice = uintArray.buffer.slice(uintArray.byteOffset, uintArray.byteLength);
+
+			return new BinaryReader(new Uint8Array(arrayBufferSlice, 3, buffer.byteLength));
+		},
+		'Uint8Array padded with 3 `FF` bytes around it': (buffer: Buffer) =>
+		{
+			const uintArray = new Uint8Array(combineBuffers([0xFF, 0xFF, 0xFF], buffer, [0xFF, 0xFF, 0xFF]));
+			const arrayBufferSlice = uintArray.buffer.slice(uintArray.byteOffset, uintArray.byteLength);
+
+			return new BinaryReader(new Uint8Array(arrayBufferSlice, 3, buffer.byteLength));
+		},
+	};
+
+	Object.entries(streamTypes).forEach(streamTypeData =>
+	{
+		const streamName = streamTypeData[0];
+		const binaryReaderBuilder = streamTypeData[1];
+
+		describe(`Stream type ${streamName}`, () =>
+		{
+			Object.entries(testFileIndex).forEach(entry =>
 			{
-				const testName = test[0];
-				const testPath = test[1];
+				const type = entry[0];
+				const tests = entry[1];
 
-				it(`${testName} - ${testPath}`, () =>
+				describe(type, () =>
 				{
-					expect(testExecutors).to.have.any.keys(type, `Failed to find test group definition for fixture 'test.utf8.${type}.${testName}.bin'`);
-					expect(testExecutors[type]).to.have.any.keys(testName, `Failed to find test definition for fixture 'test.utf8.${type}.${testName}.bin'`);
 
-					const buffer = fs.readFileSync(`${testsDirectory}/${testPath}`);
-					const reader = new BinaryReader(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength));
-					testExecutors[type][testName].call(null, reader);
+					Object.entries(tests).forEach(test =>
+					{
+						const testName = test[0];
+						const testPath = test[1];
+
+						it(`${testName} - ${testPath}`, () =>
+						{
+							expect(testExecutors).to.have.any.keys(type, `Failed to find test group definition for fixture 'test.utf8.${type}.${testName}.bin'`);
+							expect(testExecutors[type]).to.have.any.keys(testName, `Failed to find test definition for fixture 'test.utf8.${type}.${testName}.bin'`);
+
+							const buffer = fs.readFileSync(`${testsDirectory}/${testPath}`);
+							const reader = binaryReaderBuilder(buffer);
+							testExecutors[type][testName].call(null, reader);
+						});
+					});
 				});
 			});
 		});

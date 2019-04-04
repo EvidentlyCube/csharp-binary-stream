@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import {expect} from 'chai';
 import {BinaryReader} from "../src";
+import {combineBuffers} from "./common";
 
 type TestCallback = (data: BinaryReader) => void;
 
@@ -22,6 +23,11 @@ interface TestFileDictionary
 interface TestFileDictionaryDictionary
 {
 	[index: string]: TestFileDictionary;
+}
+
+interface StreamTypesDictionary
+{
+	[index: string]: ((buffer: Buffer) => BinaryReader);
 }
 
 const testsDirectory = __dirname + "/fixtures";
@@ -368,7 +374,7 @@ function buildTestExecutors(): TestCallbackDictionaryDictionary
 			'nan': reader => expect(reader.readFloat()).to.NaN,
 			'positiveInfinity': reader => expect(reader.readFloat()).to.equal(Number.POSITIVE_INFINITY),
 			'negativeInfinity': reader => expect(reader.readFloat()).to.equal(Number.NEGATIVE_INFINITY),
-		}
+		},
 	};
 }
 
@@ -377,27 +383,66 @@ describe("BinaryReader, number fixture tests", () =>
 	const testFileIndex = buildTestsFilesIndex();
 	const testExecutors = buildTestExecutors();
 
-	Object.entries(testFileIndex).forEach(entry =>
-	{
-		const type = entry[0];
-		const tests = entry[1];
-
-		describe(type, () =>
+	const streamTypes: StreamTypesDictionary = {
+		'Exactly matching ArrayBuffer': (buffer: Buffer) => new BinaryReader(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)),
+		'Uint8Array with exactly matching buffer inside': (buffer: Buffer) =>
 		{
+			const array = new Uint8Array(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength));
+			return new BinaryReader(array);
+		},
+		'Uint8Array padded with 3 `00` bytes around it': (buffer: Buffer) =>
+		{
+			const uintArray = new Uint8Array(combineBuffers([0x00, 0x00, 0x00], buffer, [0x00, 0x00, 0x00]));
+			const arrayBufferSlice = uintArray.buffer.slice(uintArray.byteOffset, uintArray.byteLength);
 
-			Object.entries(tests).forEach(test =>
+			return new BinaryReader(new Uint8Array(arrayBufferSlice, 3, buffer.byteLength));
+		},
+		'Uint8Array padded with 3 different bytes around it': (buffer: Buffer) =>
+		{
+			const uintArray = new Uint8Array(combineBuffers([0x3a, 0xe4, 0x4b], buffer, [0xa9, 0x43, 0x18]));
+			const arrayBufferSlice = uintArray.buffer.slice(uintArray.byteOffset, uintArray.byteLength);
+
+			return new BinaryReader(new Uint8Array(arrayBufferSlice, 3, buffer.byteLength));
+		},
+		'Uint8Array padded with 3 `FF` bytes around it': (buffer: Buffer) =>
+		{
+			const uintArray = new Uint8Array(combineBuffers([0xFF, 0xFF, 0xFF], buffer, [0xFF, 0xFF, 0xFF]));
+			const arrayBufferSlice = uintArray.buffer.slice(uintArray.byteOffset, uintArray.byteLength);
+
+			return new BinaryReader(new Uint8Array(arrayBufferSlice, 3, buffer.byteLength));
+		},
+	};
+
+	Object.entries(streamTypes).forEach(streamTypeData =>
+	{
+		const streamName = streamTypeData[0];
+		const binaryReaderBuilder = streamTypeData[1];
+
+		describe(`Stream type ${streamName}`, () =>
+		{
+			Object.entries(testFileIndex).forEach(entry =>
 			{
-				const testName = test[0];
-				const testPath = test[1];
+				const type = entry[0];
+				const tests = entry[1];
 
-				it(`${testName} - ${testPath}`, () =>
+				describe(type, () =>
 				{
-					expect(testExecutors).to.have.any.keys(type);
-					expect(testExecutors[type]).to.have.any.keys(testName);
 
-					const buffer = fs.readFileSync(`${testsDirectory}/${testPath}`);
-					const reader = new BinaryReader(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength));
-					testExecutors[type][testName].call(null, reader);
+					Object.entries(tests).forEach(test =>
+					{
+						const testName = test[0];
+						const testPath = test[1];
+
+						it(`${testName} - ${testPath}`, () =>
+						{
+							expect(testExecutors).to.have.any.keys(type);
+							expect(testExecutors[type]).to.have.any.keys(testName);
+
+							const buffer = fs.readFileSync(`${testsDirectory}/${testPath}`);
+							const reader = binaryReaderBuilder(buffer);
+							testExecutors[type][testName].call(null, reader);
+						});
+					});
 				});
 			});
 		});

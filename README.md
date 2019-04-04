@@ -24,8 +24,12 @@ Use the reader like this:
 import {BinaryReader, Encoding} from `csharp-binary-stream`;
 
 const reader = new BinaryReader(existingArrayBuffer);
+// or
+const reader = new BinaryReader(existingUint8Array);
+// or
+const reader = new BinaryReader(new Uint8Array(otherTypedArray.buffer, otherTypedArray.byteOffset, otherTypedArray.byteLength));
 reader.readByte();
-reader.readChar(Encoding.UTF8);
+reader.readChar(Encoding.Utf8);
 reader.readFloat();
 ```
 
@@ -38,11 +42,6 @@ At the moment only `BinaryReader` is supported, but `BinaryWriter` is soon to co
 There are some small well-document quirks to be aware of:
 
  - Using `readLong` and `readUnsignedLong` risks losing precision with really big numbers because JavaScript only supports `double` type.
- - Currently the constructor only accepts `ArrayBuffer` which can be not what you expect when you access `buffer` property of a small `TypedArray`.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
 ## License
 

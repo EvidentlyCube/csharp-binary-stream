@@ -71,21 +71,22 @@
 				<pre><code>npm i --<span class="hljs-built_in">save</span> csharp-<span class="hljs-built_in">binary</span>-stream</code></pre><h3 id="documentation">Documentation</h3>
 				<p>The full documentation can be found <a href="https://evidentlycube.github.io/chsarp-binary-stream/index.html">here</a>. </p>
 				<p>Use the reader like this:</p>
-				<pre><code>import {<span class="hljs-keyword">BinaryReader, </span>Encoding} from `csharp-<span class="hljs-keyword">binary-stream`;
-</span>
-const reader = new <span class="hljs-keyword">BinaryReader(existingArrayBuffer);
-</span>reader.readByte()<span class="hljs-comment">;</span>
-reader.readChar(Encoding.UTF8)<span class="hljs-comment">;</span>
-reader.readFloat()<span class="hljs-comment">;</span></code></pre><h2 id="details">Details</h2>
+				<pre><code>import {BinaryReader, Encoding} from `csharp-binary-stream`;
+
+const reader = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryReader(<span class="hljs-params">existingArrayBuffer</span>)</span>;
+<span class="hljs-comment">// or</span>
+const reader = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryReader(<span class="hljs-params">existingUint8Array</span>)</span>;
+<span class="hljs-comment">// or</span>
+const reader = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryReader(<span class="hljs-params">new</span> Uint8Array(<span class="hljs-params">otherTypedArray</span>.<span class="hljs-params">buffer</span>, <span class="hljs-params">otherTypedArray</span>.<span class="hljs-params">byteOffset</span>, <span class="hljs-params">otherTypedArray</span>.<span class="hljs-params">byteLength</span>)</span>);
+reader.read<span class="hljs-constructor">Byte()</span>;
+reader.read<span class="hljs-constructor">Char(Encoding.Utf8)</span>;
+reader.read<span class="hljs-constructor">Float()</span>;</code></pre><h2 id="details">Details</h2>
 				<p>The validity of the compatibility with C# is achieved by comparing the data against fixtures generated in C#. Specifically, the file <code>test/fixtureSource.cs</code> is responsible for generating all the files in the directory <code>test/fixture/*</code>. Then the tests in <code>test/BinaryReader.fixtures.*.test.ts</code> attempt to read the files and compare the value provideded with static values stored in the test file.</p>
 				<p>At the moment only <code>BinaryReader</code> is supported, but <code>BinaryWriter</code> is soon to come.</p>
 				<p>There are some small well-document quirks to be aware of:</p>
 				<ul>
 					<li>Using <code>readLong</code> and <code>readUnsignedLong</code> risks losing precision with really big numbers because JavaScript only supports <code>double</code> type.</li>
-					<li>Currently the constructor only accepts <code>ArrayBuffer</code> which can be not what you expect when you access <code>buffer</code> property of a small <code>TypedArray</code>.</li>
 				</ul>
-				<h2 id="versioning">Versioning</h2>
-				<p>We use <a href="http://semver.org/">SemVer</a> for versioning. For the versions available, see the <a href="https://github.com/your/project/tags">tags on this repository</a>. </p>
 				<h2 id="license">License</h2>
 				<p>This project is licensed under the MIT License - see the <a href="LICENSE.md">LICENSE.md</a> file for details</p>
 			</div>

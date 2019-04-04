@@ -129,13 +129,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Binary<wbr>Reader<span class="tsd-signature-symbol">(</span>stream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="binaryreader.html" class="tsd-signature-type">BinaryReader</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Binary<wbr>Reader<span class="tsd-signature-symbol">(</span>stream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="binaryreader.html" class="tsd-signature-type">BinaryReader</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L61">BinaryReader.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L70">BinaryReader.ts:70</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -146,17 +146,23 @@
 									<dt>remark</dt>
 									<dd><p>There is a danger when accessing a <code>TypedArray</code>&#39;s <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/buffer"><code>buffer</code></a> property, because the <code>TypeArray</code> is just a view into the <code>ArrayBuffer</code> that can have different offset and length.</p>
 										<p>For example, imagine a buffer <code>00 01 02 03 04 05</code>. <code>const arr = new Uint8Array(buffer, 1, 2)</code> will only have access to <code>01 02</code>, but it is still powered by the same,
-										6-byte buffer, and doing <code>new BinaryReader(arr.buffer)</code> will also refer to the longer buffer. In order to avoid this issue you may want to do:</p>
-									<pre><code><span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryReader(<span class="hljs-params">arr</span>.<span class="hljs-params">buffer</span>.<span class="hljs-params">slice</span>(<span class="hljs-params">arr</span>.<span class="hljs-params">byteOffset</span>, <span class="hljs-params">arr</span>.<span class="hljs-params">byteOffset</span> + <span class="hljs-params">arr</span>.<span class="hljs-params">byteLength</span>)</span>;</code></pre></dd>
+										6-byte buffer, and doing <code>new BinaryReader(arr.buffer)</code> will also refer to the longer buffer.</p>
+										<p>There are three solutions:</p>
+										<ol>
+											<li>If you have access to <code>Uint8Array</code>, simply use that.</li>
+											<li>Create a new <code>Uint8Array</code> from a differently typed array: <code>new Uint8Array(other.buffer, other.byteOffset, other.byteLength);</code></li>
+											<li>Create a new <code>ArrayBuffer</code> using slice: <code>arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength);</code></li>
+										</ol>
+									</dd>
 								</dl>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>stream: <span class="tsd-signature-type">ArrayBuffer</span></h5>
+									<h5>stream: <span class="tsd-signature-type">ArrayBuffer</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Uint8Array</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p><code>ArrayBuffer</code> from which to read data.</p>
+											<p>Stream from which to read the data.</p>
 										</div>
 									</div>
 								</li>
@@ -178,7 +184,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L50">BinaryReader.ts:50</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L54">BinaryReader.ts:54</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -200,7 +206,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L24">BinaryReader.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L28">BinaryReader.ts:28</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -223,7 +229,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L32">BinaryReader.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L36">BinaryReader.ts:36</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -236,7 +242,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L42">BinaryReader.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L46">BinaryReader.ts:46</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -269,7 +275,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L95">BinaryReader.ts:95</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L116">BinaryReader.ts:116</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -300,7 +306,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L112">BinaryReader.ts:112</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L133">BinaryReader.ts:133</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -331,7 +337,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L387">BinaryReader.ts:387</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L412">BinaryReader.ts:412</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -377,7 +383,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L453">BinaryReader.ts:453</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L478">BinaryReader.ts:478</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -430,7 +436,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L415">BinaryReader.ts:415</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L440">BinaryReader.ts:440</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -485,7 +491,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L366">BinaryReader.ts:366</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L389">BinaryReader.ts:389</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -516,7 +522,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L348">BinaryReader.ts:348</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L369">BinaryReader.ts:369</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -547,7 +553,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L188">BinaryReader.ts:188</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L209">BinaryReader.ts:209</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -578,7 +584,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L284">BinaryReader.ts:284</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L305">BinaryReader.ts:305</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -610,7 +616,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L247">BinaryReader.ts:247</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L268">BinaryReader.ts:268</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -649,7 +655,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L148">BinaryReader.ts:148</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L169">BinaryReader.ts:169</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -680,7 +686,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L129">BinaryReader.ts:129</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L150">BinaryReader.ts:150</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -711,7 +717,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L491">BinaryReader.ts:491</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L515">BinaryReader.ts:515</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -760,7 +766,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L215">BinaryReader.ts:215</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L236">BinaryReader.ts:236</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -791,7 +797,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L334">BinaryReader.ts:334</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L355">BinaryReader.ts:355</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -823,7 +829,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L299">BinaryReader.ts:299</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L320">BinaryReader.ts:320</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -855,7 +861,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/1d9a044/src/BinaryReader.ts#L170">BinaryReader.ts:170</a></li>
+									<li>Defined in <a href="https://github.com/EvidentlyCube/chsarp-binary-stream/blob/8548f68/src/BinaryReader.ts#L191">BinaryReader.ts:191</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

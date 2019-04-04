@@ -16,14 +16,18 @@ export class BinaryReader
 {
 	private _stream: ArrayBuffer;
 	private _view: Uint8Array;
+
 	private _position: number;
+
+	private _bufferStart: number;
+	private _bufferLength: number;
 
 	/**
 	 * Length of the stream, in bytes loaded, into the reader.
 	 */
 	public get length(): number
 	{
-		return this._view.byteLength;
+		return this._bufferLength;
 	}
 
 	/**
@@ -52,6 +56,11 @@ export class BinaryReader
 		return this._position >= this._stream.byteLength;
 	}
 
+	private get internalPosition(): number
+	{
+		return this._position + this._bufferStart;
+	}
+
 	/**
 	 * @ignore
 	 */
@@ -67,21 +76,33 @@ export class BinaryReader
 	 * There is a danger when accessing a `TypedArray`'s [`buffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/buffer) property, because the `TypeArray` is just a view into the `ArrayBuffer` that can have different offset and length.
 	 *
 	 * For example, imagine a buffer `00 01 02 03 04 05`. `const arr = new Uint8Array(buffer, 1, 2)` will only have access to `01 02`, but it is still powered by the same,
-	 * 6-byte buffer, and doing `new BinaryReader(arr.buffer)` will also refer to the longer buffer. In order to avoid this issue you may want to do:
-	 * ```
-	 * new BinaryReader(arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength);
-	 * ```
+	 * 6-byte buffer, and doing `new BinaryReader(arr.buffer)` will also refer to the longer buffer.
 	 *
-	 * @param {ArrayBuffer} stream `ArrayBuffer` from which to read data.
+	 * There are three solutions:
+	 *
+	 *  1. If you have access to `Uint8Array`, simply use that.
+	 *  2. Create a new `Uint8Array` from a differently typed array: `new Uint8Array(other.buffer, other.byteOffset, other.byteLength);`
+	 *  3. Create a new `ArrayBuffer` using slice: `arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength);`
+	 *
+	 * @param {ArrayBuffer|Uint8Array} stream Stream from which to read the data.
 	 */
-	public constructor(stream: ArrayBuffer)
+	public constructor(stream: ArrayBuffer | Uint8Array)
 	{
-		if (!(stream instanceof ArrayBuffer)) {
-			throw new Error("Buffer is not ArrayBuffer");
+		if (stream instanceof ArrayBuffer) {
+			this._stream = stream;
+			this._view = new Uint8Array(stream);
+			this._bufferStart = 0;
+			this._bufferLength = this._stream.byteLength;
+
+		} else if (stream instanceof Uint8Array) {
+			this._stream = stream.buffer;
+			this._view = stream;
+			this._bufferStart = stream.byteOffset;
+			this._bufferLength = stream.byteLength;
+		} else {
+			throw new InvalidArgumentError("Stream is neither instance of ArrayBuffer nor Uint8Array.", 'stream', stream);
 		}
 
-		this._stream = stream;
-		this._view = new Uint8Array(stream);
 		this._position = 0;
 	}
 
@@ -149,8 +170,8 @@ export class BinaryReader
 	{
 		this.assertRemainingBytes(2, 'readShort');
 
-		const byte1 = this.readByteAt(this._position);
-		const byte2 = this.readByteAt(this._position + 1);
+		const byte1 = this._view[this._position];
+		const byte2 = this._view[this._position + 1];
 		this._position += 2;
 
 		const short = byte2 * 256 + byte1;
@@ -171,8 +192,8 @@ export class BinaryReader
 	{
 		this.assertRemainingBytes(2, 'readUnsignedShort');
 
-		const byte1 = this.readByteAt(this._position);
-		const byte2 = this.readByteAt(this._position + 1);
+		const byte1 = this._view[this._position];
+		const byte2 = this._view[this._position + 1];
 		this._position += 2;
 
 		return byte2 * 256 + byte1;
@@ -189,10 +210,10 @@ export class BinaryReader
 	{
 		this.assertRemainingBytes(4, 'readInt');
 
-		const byte1 = this.readByteAt(this._position);
-		const byte2 = this.readByteAt(this._position + 1);
-		const byte3 = this.readByteAt(this._position + 2);
-		const byte4 = this.readByteAt(this._position + 3);
+		const byte1 = this._view[this._position];
+		const byte2 = this._view[this._position + 1];
+		const byte3 = this._view[this._position + 2];
+		const byte4 = this._view[this._position + 3];
 		this._position += 4;
 
 		const int = byte4 * 256 * 256 * 256
@@ -216,10 +237,10 @@ export class BinaryReader
 	{
 		this.assertRemainingBytes(4, 'readUnsignedInt');
 
-		const byte1 = this.readByteAt(this._position);
-		const byte2 = this.readByteAt(this._position + 1);
-		const byte3 = this.readByteAt(this._position + 2);
-		const byte4 = this.readByteAt(this._position + 3);
+		const byte1 = this._view[this._position];
+		const byte2 = this._view[this._position + 1];
+		const byte3 = this._view[this._position + 2];
+		const byte4 = this._view[this._position + 3];
 		this._position += 4;
 
 		return byte4 * 256 * 256 * 256
@@ -248,14 +269,14 @@ export class BinaryReader
 	{
 		this.assertRemainingBytes(8, 'readLongString');
 
-		const byte1 = this.readByteAt(this._position);
-		const byte2 = this.readByteAt(this._position + 1);
-		const byte3 = this.readByteAt(this._position + 2);
-		const byte4 = this.readByteAt(this._position + 3);
-		const byte5 = this.readByteAt(this._position + 4);
-		const byte6 = this.readByteAt(this._position + 5);
-		const byte7 = this.readByteAt(this._position + 6);
-		const byte8 = this.readByteAt(this._position + 7);
+		const byte1 = this._view[this._position];
+		const byte2 = this._view[this._position + 1];
+		const byte3 = this._view[this._position + 2];
+		const byte4 = this._view[this._position + 3];
+		const byte5 = this._view[this._position + 4];
+		const byte6 = this._view[this._position + 5];
+		const byte7 = this._view[this._position + 6];
+		const byte8 = this._view[this._position + 7];
 		this._position += 8;
 
 		const m256 = bigInt(256);
@@ -300,14 +321,14 @@ export class BinaryReader
 	{
 		this.assertRemainingBytes(8, 'readUnsignedLongString');
 
-		const byte1 = this.readByteAt(this._position);
-		const byte2 = this.readByteAt(this._position + 1);
-		const byte3 = this.readByteAt(this._position + 2);
-		const byte4 = this.readByteAt(this._position + 3);
-		const byte5 = this.readByteAt(this._position + 4);
-		const byte6 = this.readByteAt(this._position + 5);
-		const byte7 = this.readByteAt(this._position + 6);
-		const byte8 = this.readByteAt(this._position + 7);
+		const byte1 = this._view[this._position];
+		const byte2 = this._view[this._position + 1];
+		const byte3 = this._view[this._position + 2];
+		const byte4 = this._view[this._position + 3];
+		const byte5 = this._view[this._position + 4];
+		const byte6 = this._view[this._position + 5];
+		const byte7 = this._view[this._position + 6];
+		const byte8 = this._view[this._position + 7];
 		this._position += 8;
 
 		const m256 = bigInt(256);
@@ -349,7 +370,9 @@ export class BinaryReader
 	{
 		this.assertRemainingBytes(4, 'readFloat');
 
-		const floatArray = new Float32Array(this._stream, this._position, 1);
+		const floatArray = this.internalPosition % 4 === 0
+			? new Float32Array(this._stream, this.internalPosition, 1)
+			: new Float32Array(this._stream.slice(this.internalPosition, this.internalPosition + 4), 0, 1);
 
 		this._position += 4;
 
@@ -367,7 +390,9 @@ export class BinaryReader
 	{
 		this.assertRemainingBytes(8, 'readDouble');
 
-		const doubleArray = new Float64Array(this._stream, this._position, 1);
+		const doubleArray = this.internalPosition % 8 === 0
+			? new Float64Array(this._stream, this.internalPosition, 1)
+			: new Float64Array(this._stream.slice(this.internalPosition, this.internalPosition + 8), 0, 1);
 
 		this._position += 8;
 
@@ -476,7 +501,6 @@ export class BinaryReader
 		return result.readString;
 	}
 
-
 	/**
 	 * Reads a string from the stream that is prefixed with its length, encoded as an integer seven bits at a time.
 	 *
@@ -510,21 +534,6 @@ export class BinaryReader
 		this._position = newPosition + stringLength;
 
 		return data.readString;
-	}
-
-	private readByteAt(position: number): number | null
-	{
-		if (!this.isValidPosition(position)) {
-			throw new Error("Temporary error whoops");
-		}
-		return this.isValidPosition(position)
-			? this._view[position]
-			: null;
-	}
-
-	private isValidPosition(position: number): boolean
-	{
-		return position >= 0 && position < this._view.length;
 	}
 
 	private assertRemainingBytes(bytesExpected: number, operationName: string): void
