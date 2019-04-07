@@ -1,6 +1,7 @@
 import {InvalidUtf8CharacterError} from "./errors/InvalidUtf8CharacterError";
-import {InvalidUtf8CharacterMessageFactory, OutOfBoundsMessageFactory} from "./errors/ErrorMessageFactory";
-import {OutOfBoundsError} from "./errors/OutOfBoundsError";
+import {InvalidUtf8CharacterMessageFactory, EndOfStreamMessageFactory} from "./errors/ErrorMessageFactory";
+import {EndOfStreamError} from "./errors/EndOfStreamError";
+import {InvalidArgumentError} from "./errors/InvalidArgumentError";
 
 /** @ignore */
 export const leadingByteLength1Prefix = parseInt("00000000", 2); // b0xxxxxxx
@@ -37,6 +38,10 @@ export function writeUtf8StringFromCodePoints(buffer: number[], position: number
 
 	for(let i = 0; i < dataToWrite.length; i++) {
 		const codepoint = dataToWrite[i];
+		if (Number.isNaN(codepoint) || !Number.isFinite(codepoint) || codepoint < 0) {
+			throw new InvalidArgumentError(`Codepoint at position #${i} in the UTF-8 data-to-write is not valid, should be non-negative integer.`, 'dataToWrite', codepoint);
+		}
+
 		if (codepoint < 0x80) {
 			buffer[position++] = codepoint;
 
@@ -74,10 +79,10 @@ export function readUtf8StringFromBytes(bytes: Uint8Array, position: number, max
 		if (leadingByte > 127) {
 			if (leadingByte > 191 && leadingByte < 224) {
 				if (remainingBytes < 2) {
-					throw new OutOfBoundsError(OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(position - 1, 2, remainingBytes));
+					throw new EndOfStreamError(EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(position - 1, 2, remainingBytes));
 
 				} else if (remainingAllowedBytes < 2) {
-					throw new OutOfBoundsError(OutOfBoundsMessageFactory.utf8NotEnoughBytesAllowed(position - 1, 2, remainingAllowedBytes));
+					throw new EndOfStreamError(EndOfStreamMessageFactory.utf8NotEnoughBytesAllowed(position - 1, 2, remainingAllowedBytes));
 				}
 
 				const secondByte = bytes[position++];
@@ -87,10 +92,10 @@ export function readUtf8StringFromBytes(bytes: Uint8Array, position: number, max
 				leadingByte = (leadingByte & 31) << 6 | secondByte & 63;
 			} else if (leadingByte > 223 && leadingByte < 240) {
 				if (remainingBytes < 3) {
-					throw new OutOfBoundsError(OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(position - 1, 3, remainingBytes));
+					throw new EndOfStreamError(EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(position - 1, 3, remainingBytes));
 
 				} else if (remainingAllowedBytes < 3) {
-					throw new OutOfBoundsError(OutOfBoundsMessageFactory.utf8NotEnoughBytesAllowed(position - 1, 3, remainingAllowedBytes));
+					throw new EndOfStreamError(EndOfStreamMessageFactory.utf8NotEnoughBytesAllowed(position - 1, 3, remainingAllowedBytes));
 				}
 
 				const secondByte = bytes[position++];
@@ -104,10 +109,10 @@ export function readUtf8StringFromBytes(bytes: Uint8Array, position: number, max
 				leadingByte = (leadingByte & 15) << 12 | (secondByte & 63) << 6 | thirdByte & 63;
 			} else if (leadingByte > 239 && leadingByte < 248) {
 				if (remainingBytes < 4) {
-					throw new OutOfBoundsError(OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(position - 1, 4, remainingBytes));
+					throw new EndOfStreamError(EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(position - 1, 4, remainingBytes));
 
 				} else if (remainingAllowedBytes < 4) {
-					throw new OutOfBoundsError(OutOfBoundsMessageFactory.utf8NotEnoughBytesAllowed(position - 1, 4, remainingAllowedBytes));
+					throw new EndOfStreamError(EndOfStreamMessageFactory.utf8NotEnoughBytesAllowed(position - 1, 4, remainingAllowedBytes));
 				}
 
 				const secondByte = bytes[position++];

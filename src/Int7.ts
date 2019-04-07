@@ -1,5 +1,5 @@
-import {OutOfBoundsError} from "./errors/OutOfBoundsError";
-import {OutOfBoundsMessageFactory} from "./errors/ErrorMessageFactory";
+import {EndOfStreamError} from "./errors/EndOfStreamError";
+import {EndOfStreamMessageFactory} from "./errors/ErrorMessageFactory";
 
 /** @ignore */
 export function read7BitEncodedInt(position: number, buffer: Uint8Array): [number, number]
@@ -14,11 +14,11 @@ export function read7BitEncodedInt(position: number, buffer: Uint8Array): [numbe
 		// In a future version, add a DataFormatException.
 		if (shift === 5 * 7)  // 5 bytes max per Int32, shift += 7
 		{
-			throw new OutOfBoundsError(OutOfBoundsMessageFactory.readStringTooLongPrefix());
+			throw new EndOfStreamError(EndOfStreamMessageFactory.readStringTooLongPrefix());
 		}
 
 		if (position >= buffer.byteLength) {
-			throw new OutOfBoundsError(OutOfBoundsMessageFactory.readStringLengthNotEnoughBytesLeft());
+			throw new EndOfStreamError(EndOfStreamMessageFactory.readStringLengthNotEnoughBytesLeft());
 		}
 		b = buffer[position++];
 		count |= (b & 0x7F) << shift;

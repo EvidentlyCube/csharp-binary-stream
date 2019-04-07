@@ -24,7 +24,7 @@ export const InvalidUtf8CharacterMessageFactory = {
 };
 
 /** @ignore*/
-export const OutOfBoundsMessageFactory = {
+export const EndOfStreamMessageFactory = {
 	readStringZeroBytesLeft: function (): string
 	{
 		return `readString requires at least one byte to be left in the stream, but 0 bytes are remaining.`;
@@ -63,4 +63,12 @@ export const OutOfBoundsMessageFactory = {
 	{
 		return `${operationName} expects ${bytesExpected} bytes to be left in the stream, but only ${bytesRemaining} byte(s) are remaining.`;
 	},
+};
+
+/** @ignore */
+export const OutOfBoundsMessageFactory = {
+	numberOutsideRange: function(numberName: string, minimumValue: string|number, maximumValue: string|number, givenValue: string|number): string
+	{
+		return `Number of type '${numberName}' must be between ${minimumValue} and ${maximumValue}, got ${givenValue} instead.`;
+	}
 };

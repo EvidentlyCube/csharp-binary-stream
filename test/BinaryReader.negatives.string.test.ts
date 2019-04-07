@@ -1,7 +1,7 @@
 import {expect} from 'chai';
-import {BinaryReader, Encoding, OutOfBoundsError} from "../src";
+import {BinaryReader, Encoding, EndOfStreamError} from "../src";
 import {getBufferBinary, getBufferOfLength} from "./common";
-import {EncodingMessageFactory, OutOfBoundsMessageFactory} from "../src/errors/ErrorMessageFactory";
+import {EncodingMessageFactory, EndOfStreamMessageFactory} from "../src/errors/ErrorMessageFactory";
 import {EncodingError} from "../src/errors/EncodingError";
 import {InvalidArgumentError} from "../src/errors/InvalidArgumentError";
 
@@ -68,7 +68,7 @@ describe("BinaryReader, string negative tests", () =>
 		{
 			const reader = new BinaryReader(getBufferBinary('10000001 10000001 10000001 10000001 10000001 10000001'));
 
-			expect(() => reader.readString(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readStringTooLongPrefix());
+			expect(() => reader.readString(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readStringTooLongPrefix());
 		});
 	});
 });

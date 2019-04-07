@@ -1,9 +1,9 @@
 import {Encoding, isValidEncoding} from "./Encoding";
 import * as bigInt from 'big-integer';
-import {OutOfBoundsError} from "./errors/OutOfBoundsError";
+import {EndOfStreamError} from "./errors/EndOfStreamError";
 import * as Utf8 from './Utf8';
 import * as Int7 from './Int7';
-import {EncodingMessageFactory, OutOfBoundsMessageFactory} from "./errors/ErrorMessageFactory";
+import {EncodingMessageFactory, EndOfStreamMessageFactory} from "./errors/ErrorMessageFactory";
 import {EncodingError} from "./errors/EncodingError";
 import {InvalidArgumentError} from "./errors/InvalidArgumentError";
 
@@ -111,7 +111,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadBoolean` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readboolean?view=netframework-4.7.2)
 	 * @returns {boolean} `false` if it's zero and `true` if it is not zero.
-	 * @throws `OutOfBoundsError` Thrown when there are no bytes left in the stream.
+	 * @throws `EndOfStreamError` Thrown when there are no bytes left in the stream.
 	 */
 	public readBoolean(): boolean
 	{
@@ -128,7 +128,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadByte` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readbyte?view=netframework-4.7.2)
 	 * @returns {number} Number between 0 and 255.
-	 * @throws `OutOfBoundsError` Thrown when there are no bytes left in the stream.
+	 * @throws `EndOfStreamError` Thrown when there are no bytes left in the stream.
 	 */
 	public readByte(): number
 	{
@@ -145,7 +145,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadSByte` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readsbyte?view=netframework-4.7.2)
 	 * @returns {number} Number between -128 and 127.
-	 * @throws `OutOfBoundsError` Thrown when there are no bytes left in the stream.
+	 * @throws `EndOfStreamError` Thrown when there are no bytes left in the stream.
 	 */
 	public readSignedByte(): number
 	{
@@ -164,7 +164,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadInt16` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint16?view=netframework-4.7.2)
 	 * @returns {number} Number between -65,536 and 32,767.
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 */
 	public readShort(): number
 	{
@@ -186,7 +186,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadUInt16` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint16?view=netframework-4.7.2)
 	 * @returns {number} Number between 0 and 65,535.
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 */
 	public readUnsignedShort(): number
 	{
@@ -204,7 +204,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadInt32` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint32?view=netframework-4.7.2)
 	 * @returns {number} Number between -2,147,483,648 and 2,147,483,647.
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 */
 	public readInt(): number
 	{
@@ -231,7 +231,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadUInt32` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint32?view=netframework-4.7.2)
 	 * @returns {number} Number between 0 and 4,294,967,296.
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 */
 	public readUnsignedInt(): number
 	{
@@ -263,7 +263,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint64?view=netframework-4.7.2)
 	 * @returns {string} String representing a number between -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 */
 	public readLongString(): string
 	{
@@ -300,7 +300,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint64?view=netframework-4.7.2)
 	 * @returns {number} Number between -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 */
 	public readLong(): number
 	{
@@ -315,7 +315,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadUInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint64?view=netframework-4.7.2)
 	 * @returns {string} String representing a number between 0 and 18,446,744,073,709,551,615.
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 */
 	public readUnsignedLongString(): string
 	{
@@ -350,7 +350,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadUInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint64?view=netframework-4.7.2)
 	 * @returns {number} Number between 0 and 18,446,744,073,709,551,615.
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 */
 	public readUnsignedLong(): number
 	{
@@ -364,7 +364,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadSingle` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readsingle?view=netframework-4.7.2)
 	 * @returns {number} Float number
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 */
 	public readFloat(): number
 	{
@@ -384,7 +384,7 @@ export class BinaryReader
 	 *
 	 * @link [C# `BinaryReader.ReadDouble` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readdouble?view=netframework-4.7.2)
 	 * @returns {number} Double number
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 */
 	public readDouble(): number
 	{
@@ -406,7 +406,7 @@ export class BinaryReader
 	 * @param {Encoding} encoding The encoding to use when reading the chars.
 	 * @returns {string} A single character read from the stream
 	 * @throws `EncodingError` Thrown when an unknown encoding is provided as the argument.
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @throws `InvalidUtf8CharacterError` Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 */
 	public readChar(encoding: Encoding): string
@@ -416,7 +416,7 @@ export class BinaryReader
 		}
 
 		if (this.remainingBytes === 0) {
-			throw new OutOfBoundsError(OutOfBoundsMessageFactory.readCharZeroBytesLeft());
+			throw new EndOfStreamError(EndOfStreamMessageFactory.readCharZeroBytesLeft());
 		}
 
 		const result = Utf8.readUtf8StringFromBytes(this._view, this._position, 1);
@@ -433,7 +433,7 @@ export class BinaryReader
 	 * @returns {string} A string read from the stream.
 	 * @throws `InvalidArgumentError` Thrown when `charactersToRead` is not a number nor numeric string or when it is less than 1.
 	 * @throws `EncodingError` Thrown when an unknown encoding is provided as the argument.
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @throws `InvalidUtf8CharacterError` Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 * @link [C# `BinaryReader.ReadChars` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readchars?view=netframework-4.7.2)
 	 */
@@ -454,7 +454,7 @@ export class BinaryReader
 		}
 
 		if (this.remainingBytes === 0) {
-			throw new OutOfBoundsError(OutOfBoundsMessageFactory.readCharZeroBytesLeft());
+			throw new EndOfStreamError(EndOfStreamMessageFactory.readCharZeroBytesLeft());
 		}
 
 		const result = Utf8.readUtf8StringFromBytes(this._view, this._position, charactersToRead);
@@ -471,7 +471,7 @@ export class BinaryReader
 	 * @returns {string} A string read from the stream.
 	 * @throws `InvalidArgumentError` Thrown when `bytesToRead` is not a number nor numeric string or when it is less than 1.
 	 * @throws `EncodingError` Thrown when an unknown encoding is provided as the argument.
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream or when the function stops reading in the middle of a
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream or when the function stops reading in the middle of a
 	 * character sequence in multibyte character encodings. Position of the stream does not change if this exception is thrown.
 	 * @throws `InvalidUtf8CharacterError` Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 */
@@ -492,7 +492,7 @@ export class BinaryReader
 		}
 
 		if (this.remainingBytes === 0) {
-			throw new OutOfBoundsError(OutOfBoundsMessageFactory.readCharZeroBytesLeft());
+			throw new EndOfStreamError(EndOfStreamMessageFactory.readCharZeroBytesLeft());
 		}
 
 		const result = Utf8.readUtf8StringFromBytes(this._view, this._position, Number.MAX_SAFE_INTEGER, bytesToRead);
@@ -508,7 +508,7 @@ export class BinaryReader
 	 * @returns {string} A string read from the stream.
 	 * @throws `InvalidArgumentError` Thrown when `charactersToRead` is not a number nor numeric string or when it is less than 1.
 	 * @throws `EncodingError` Thrown when an unknown encoding is provided as the argument.
-	 * @throws `OutOfBoundsError` Thrown when there are not enough bytes left in the stream or when the lenfth prefix is longer than 5 bytes.
+	 * @throws `EndOfStreamError` Thrown when there are not enough bytes left in the stream or when the lenfth prefix is longer than 5 bytes.
 	 * @throws `InvalidUtf8CharacterError` Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 * @link [C# `BinaryReader.ReadString` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readstring?view=netframework-4.7.2)
 	 */
@@ -519,14 +519,14 @@ export class BinaryReader
 		}
 
 		if (this.remainingBytes === 0) {
-			throw new OutOfBoundsError(OutOfBoundsMessageFactory.readStringZeroBytesLeft());
+			throw new EndOfStreamError(EndOfStreamMessageFactory.readStringZeroBytesLeft());
 		}
 
 		const [stringLength, newPosition] = Int7.read7BitEncodedInt(this._position, this._view);
 
 		const remainingBytes = this.length - newPosition;
 		if (remainingBytes < stringLength) {
-			throw new OutOfBoundsError(OutOfBoundsMessageFactory.readStringTooLongLeft(stringLength, remainingBytes));
+			throw new EndOfStreamError(EndOfStreamMessageFactory.readStringTooLongLeft(stringLength, remainingBytes));
 		}
 
 		const data = Utf8.readUtf8StringFromBytes(this._view, newPosition, Number.MAX_SAFE_INTEGER, stringLength);
@@ -541,8 +541,8 @@ export class BinaryReader
 		const bytesRemaining = this.remainingBytes;
 
 		if (bytesRemaining < bytesExpected) {
-			throw new OutOfBoundsError(
-				OutOfBoundsMessageFactory.notEnoughBytesInBuffer(bytesExpected, bytesRemaining, operationName),
+			throw new EndOfStreamError(
+				EndOfStreamMessageFactory.notEnoughBytesInBuffer(bytesExpected, bytesRemaining, operationName),
 			);
 		}
 	}

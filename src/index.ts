@@ -1,11 +1,13 @@
 import {BinaryReader} from './BinaryReader'
-import {OutOfBoundsError} from './errors/OutOfBoundsError'
+import {BinaryWriter} from './BinaryWriter'
+import {EndOfStreamError} from './errors/EndOfStreamError'
 import {InvalidUtf8CharacterError} from './errors/InvalidUtf8CharacterError'
 import {Encoding} from "./Encoding";
 
 export {
 	BinaryReader,
-	OutOfBoundsError,
+	BinaryWriter,
+	EndOfStreamError,
 	InvalidUtf8CharacterError,
 	Encoding
 };

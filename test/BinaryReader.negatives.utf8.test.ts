@@ -1,8 +1,8 @@
 import {expect} from 'chai';
-import {BinaryReader, Encoding, InvalidUtf8CharacterError, OutOfBoundsError} from "../src";
+import {BinaryReader, Encoding, EndOfStreamError, InvalidUtf8CharacterError} from "../src";
 import {getBufferArray, getBufferBinary, getBufferHex, getBufferOfLength, getUtf8CharArray} from "./common";
 import * as Utf8 from "../src/Utf8";
-import {InvalidUtf8CharacterMessageFactory, OutOfBoundsMessageFactory} from "../src/errors/ErrorMessageFactory";
+import {EndOfStreamMessageFactory, InvalidUtf8CharacterMessageFactory} from "../src/errors/ErrorMessageFactory";
 
 const lead2 = Utf8.leadingByteLength2Prefix;
 const lead3 = Utf8.leadingByteLength3Prefix;
@@ -11,228 +11,228 @@ const cont = Utf8.continuationBytePrefix;
 
 describe("BinaryReader, string UTF-8 encoding negative tests", () =>
 {
-	describe('OutOfBounds - readChar', () =>
+	describe('EndOfStream - readChar', () =>
 	{
 		it("Error when no bytes remaining", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([]));
 
-			expect(() => reader.readChar(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readCharZeroBytesLeft());
+			expect(() => reader.readChar(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readCharZeroBytesLeft());
 		});
 		it("Error when 2-byte character but stream has 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead2]));
 
-			expect(() => reader.readChar(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 2, 1));
+			expect(() => reader.readChar(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 2, 1));
 		});
 		it("Error when 3-byte character but stream has 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead3]));
 
-			expect(() => reader.readChar(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 1));
+			expect(() => reader.readChar(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 1));
 		});
 		it("Error when 3-byte character but stream has 2 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead3, cont]));
 
-			expect(() => reader.readChar(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 2));
+			expect(() => reader.readChar(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 2));
 		});
 		it("Error when 4-byte character but stream has 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4]));
 
-			expect(() => reader.readChar(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 1));
+			expect(() => reader.readChar(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 1));
 		});
 		it("Error when 4-byte character but stream has 2 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4, cont]));
 
-			expect(() => reader.readChar(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 2));
+			expect(() => reader.readChar(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 2));
 		});
 		it("Error when 4-byte character but stream has 3 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4, cont, cont]));
 
-			expect(() => reader.readChar(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 3));
+			expect(() => reader.readChar(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 3));
 		});
 	});
-	
-	describe('OutOfBounds - readChars', () =>
+
+	describe('EndOfStream - readChars', () =>
 	{
 		it("Error when no bytes remaining", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([]));
 
-			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readCharZeroBytesLeft());
+			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readCharZeroBytesLeft());
 		});
 		it("Error when 2-byte character but stream has 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead2]));
 
-			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 2, 1));
+			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 2, 1));
 		});
 		it("Error when 3-byte character but stream has 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead3]));
 
-			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 1));
+			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 1));
 		});
 		it("Error when 3-byte character but stream has 2 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead3, cont]));
 
-			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 2));
+			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 2));
 		});
 		it("Error when 4-byte character but stream has 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4]));
 
-			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 1));
+			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 1));
 		});
 		it("Error when 4-byte character but stream has 2 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4, cont]));
 
-			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 2));
+			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 2));
 		});
 		it("Error when 4-byte character but stream has 3 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4, cont, cont]));
 
-			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 3));
+			expect(() => reader.readChars(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 3));
 		});
 	});
-	
-	describe('OutOfBounds - readCharBytes', () =>
+
+	describe('EndOfStream - readCharBytes', () =>
 	{
 		it("Error when no bytes remaining", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([]));
 
-			expect(() => reader.readCharBytes(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readCharZeroBytesLeft());
+			expect(() => reader.readCharBytes(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readCharZeroBytesLeft());
 		});
 		it("Error when 2-byte character but stream has 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead2]));
 
-			expect(() => reader.readCharBytes(2, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 2, 1));
+			expect(() => reader.readCharBytes(2, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 2, 1));
 		});
 		it("Error when 3-byte character but stream has 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead3]));
 
-			expect(() => reader.readCharBytes(3, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 1));
+			expect(() => reader.readCharBytes(3, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 1));
 		});
 		it("Error when 3-byte character but stream has 2 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead3, cont]));
 
-			expect(() => reader.readCharBytes(3, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 2));
+			expect(() => reader.readCharBytes(3, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 3, 2));
 		});
 		it("Error when 4-byte character but stream has 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4]));
 
-			expect(() => reader.readCharBytes(4, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 1));
+			expect(() => reader.readCharBytes(4, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 1));
 		});
 		it("Error when 4-byte character but stream has 2 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4, cont]));
 
-			expect(() => reader.readCharBytes(4, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 2));
+			expect(() => reader.readCharBytes(4, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 2));
 		});
 		it("Error when 4-byte character but stream has 3 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4, cont, cont]));
 
-			expect(() => reader.readCharBytes(4, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 3));
+			expect(() => reader.readCharBytes(4, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesInBuffer(0, 4, 3));
 		});
 		it("Error when 2-byte character but we read 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead2, cont]));
 
-			expect(() => reader.readCharBytes(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesAllowed(0, 2, 1));
+			expect(() => reader.readCharBytes(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesAllowed(0, 2, 1));
 		});
 		it("Error when 3-byte character but we read 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead3, cont, cont]));
 
-			expect(() => reader.readCharBytes(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesAllowed(0, 3, 1));
+			expect(() => reader.readCharBytes(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesAllowed(0, 3, 1));
 		});
 		it("Error when 3-byte character but we read 2 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead3, cont, cont]));
 
-			expect(() => reader.readCharBytes(2, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesAllowed(0, 3, 2));
+			expect(() => reader.readCharBytes(2, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesAllowed(0, 3, 2));
 		});
 		it("Error when 4-byte character but we read 1 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4, cont, cont, cont]));
 
-			expect(() => reader.readCharBytes(1, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesAllowed(0, 4, 1));
+			expect(() => reader.readCharBytes(1, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesAllowed(0, 4, 1));
 		});
 		it("Error when 4-byte character but we read 2 byte", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4, cont, cont, cont]));
 
-			expect(() => reader.readCharBytes(2, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesAllowed(0, 4, 2));
+			expect(() => reader.readCharBytes(2, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesAllowed(0, 4, 2));
 		});
 		it("Error when 4-byte character but we read 3 bytes", () =>
 		{
 			const reader = new BinaryReader(getBufferArray([lead4, cont, cont, cont]));
 
-			expect(() => reader.readCharBytes(3, Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.utf8NotEnoughBytesAllowed(0, 4, 3));
+			expect(() => reader.readCharBytes(3, Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.utf8NotEnoughBytesAllowed(0, 4, 3));
 		});
 	});
-	
-	describe('OutOfBounds - readString', () =>
+
+	describe('EndOfStream - readString', () =>
 	{
 		it("Error when no stream left", () =>
 		{
 			const reader = new BinaryReader(getBufferOfLength(0));
 
-			expect(() => reader.readString(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readStringZeroBytesLeft());
+			expect(() => reader.readString(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readStringZeroBytesLeft());
 		});
 		it("Error when length prefix is longer than 1 byte and not enough bytes left", () =>
 		{
 			const reader = new BinaryReader(getBufferBinary('1000:0000'));
 
-			expect(() => reader.readString(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readStringLengthNotEnoughBytesLeft());
+			expect(() => reader.readString(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readStringLengthNotEnoughBytesLeft());
 		});
 
 		it("Error when length prefix is longer than 2 byte and not enough bytes left", () =>
 		{
 			const reader = new BinaryReader(getBufferBinary('1000:0000 1000:0000'));
 
-			expect(() => reader.readString(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readStringLengthNotEnoughBytesLeft());
+			expect(() => reader.readString(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readStringLengthNotEnoughBytesLeft());
 		});
 
 		it("Error when length prefix is longer than 3 byte and not enough bytes left", () =>
 		{
 			const reader = new BinaryReader(getBufferBinary('1000:0000 1000:0000 1000:0000'));
 
-			expect(() => reader.readString(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readStringLengthNotEnoughBytesLeft());
+			expect(() => reader.readString(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readStringLengthNotEnoughBytesLeft());
 		});
 
 		it("Error when length prefix is longer than 4 byte and not enough bytes left", () =>
 		{
 			const reader = new BinaryReader(getBufferBinary('1000:0000 1000:0000 1000:0000 1000:0000'));
 
-			expect(() => reader.readString(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readStringLengthNotEnoughBytesLeft());
+			expect(() => reader.readString(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readStringLengthNotEnoughBytesLeft());
 		});
 
 		it("Error when no stream to read any of the string", () =>
 		{
 			const reader = new BinaryReader(getBufferBinary('0000:0100'));
 
-			expect(() => reader.readString(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readStringTooLongLeft(4, 0));
+			expect(() => reader.readString(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readStringTooLongLeft(4, 0));
 		});
 
 		it("Error when no stream to read all of the string", () =>
 		{
 			const reader = new BinaryReader(getBufferBinary('0000:0100 0000:0000'));
 
-			expect(() => reader.readString(Encoding.Utf8)).to.throw(OutOfBoundsError, OutOfBoundsMessageFactory.readStringTooLongLeft(4, 1));
+			expect(() => reader.readString(Encoding.Utf8)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.readStringTooLongLeft(4, 1));
 		});
 	});
 

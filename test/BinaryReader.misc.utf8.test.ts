@@ -169,14 +169,17 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () =>
 		});
 	});
 
-	describe('Rounding arguments', () => {
-		it("readChars - round the argument down", () => {
+	describe('Rounding arguments', () =>
+	{
+		it("readChars - round the argument down", () =>
+		{
 			const reader = new BinaryReader(getBufferOfLength(128));
 
 			expect(reader.readChars(1.1, Encoding.Utf8)).to.have.length(1);
 			expect(reader.readChars(16.9, Encoding.Utf8)).to.have.length(16);
 		});
-		it("readCharBytes - round the argument down", () => {
+		it("readCharBytes - round the argument down", () =>
+		{
 			const reader = new BinaryReader(getBufferOfLength(128));
 
 			expect(reader.readCharBytes(1.1, Encoding.Utf8)).to.have.length(1);

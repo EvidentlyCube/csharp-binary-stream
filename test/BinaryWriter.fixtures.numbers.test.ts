@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import {expect} from 'chai';
-import {BinaryWriter} from "../src/BinaryWriter";
+import {BinaryWriter} from "../src";
 import {bufferToHex, buildTestsFilesIndex, FixturesDirectory, WriterTestCallbackDictionaryDictionary} from "./fixtureCommon";
 
 function buildTestExecutors(): WriterTestCallbackDictionaryDictionary
@@ -113,8 +113,8 @@ function buildTestExecutors(): WriterTestCallbackDictionaryDictionary
 			'negativeInfinity': writer => writer.writeDouble(Number.NEGATIVE_INFINITY),
 		},
 		float: {
-			'min': writer => writer.writeFloat(-3.4028234663852886e+38),
-			'max': writer => writer.writeFloat(3.4028234663852886e+38),
+			'min': writer => writer.writeFloat(-3.4028235e+38),
+			'max': writer => writer.writeFloat(3.4028235e+38),
 			'epsilon': writer => writer.writeFloat(1.401298E-45),
 			'zero': writer => writer.writeFloat(0),
 			'smallNegative': writer => writer.writeFloat(-0.00005),
