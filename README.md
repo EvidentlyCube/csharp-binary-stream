@@ -14,11 +14,12 @@ Add it to your project via:
 npm i --save csharp-binary-stream
 ```
 
+
 ### Documentation
 
 The full documentation can be found [here](https://evidentlycube.github.io/chsarp-binary-stream/index.html). 
 
-Use the reader like this:
+The reader can be used like this:
 
 ```
 import {BinaryReader, Encoding} from `csharp-binary-stream`;
@@ -28,21 +29,35 @@ const reader = new BinaryReader(existingArrayBuffer);
 const reader = new BinaryReader(existingUint8Array);
 // or
 const reader = new BinaryReader(new Uint8Array(otherTypedArray.buffer, otherTypedArray.byteOffset, otherTypedArray.byteLength));
-reader.readByte();
-reader.readChar(Encoding.Utf8);
-reader.readFloat();
+console.log(reader.readByte());
+console.log(reader.readChar(Encoding.Utf8));
+console.log(reader.readFloat());
+```
+
+While the writer like this:
+
+```
+import {BinaryWriter, Encoding} from `csharp-binary-stream`;
+
+const writer = new BinaryWriter();
+// or
+const writer = new BinaryWriter(existingNumberArray);
+//or
+const writer = new BinaryWriter(existingUint8Array);
+writer.writeByte(7);
+writer.writeChars("Writing some text", Encoding.Utf8);
+writer.writeLong("12345678900012");
 ```
 
 ## Details
 
 The validity of the compatibility with C# is achieved by comparing the data against fixtures generated in C#. Specifically, the file `test/fixtureSource.cs` is responsible for generating all the files in the directory `test/fixture/*`. Then the tests in `test/BinaryReader.fixtures.*.test.ts` attempt to read the files and compare the value provideded with static values stored in the test file.
 
-At the moment only `BinaryReader` is supported, but `BinaryWriter` is soon to come.
-
 There are some small well-document quirks to be aware of:
 
  - Using `readLong` and `readUnsignedLong` risks losing precision with really big numbers because JavaScript only supports `double` type.
-
+ - Using `writeLong` and `writeUnsignedLong` with numbers instead of strings risks losing precision with really big numbers because JavaScript only supports `double` type.
+ 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details

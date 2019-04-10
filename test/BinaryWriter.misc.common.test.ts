@@ -2,7 +2,7 @@ import {expect} from 'chai';
 import {BinaryWriter} from "../src";
 import {OutOfBoundsError} from "../src/errors/OutOfBoundsError";
 
-describe("BinaryWriter, string UTF-8 encoding misc tests", () =>
+describe("BinaryWriter, common misc tests", () =>
 {
 	describe("get position", () =>
 	{
@@ -73,26 +73,13 @@ describe("BinaryWriter, string UTF-8 encoding misc tests", () =>
 		});
 	});
 
-	describe("get capacity", () =>
-	{
-		[0, 10, 128, 5000].forEach(capacity =>
-		{
-			it(`Should return capacity provided in constructor (${capacity})`, () =>
-			{
-				const writer = new BinaryWriter(capacity);
-
-				expect(writer.capacity).to.equal(capacity);
-			});
-		});
-	});
-
 	describe("constructor", () =>
 	{
-		it("constructor(number) - Should set capacity", () =>
+		it("constructor() - Should create empty writer", () =>
 		{
-			const writer = new BinaryWriter(13);
+			const writer = new BinaryWriter();
 
-			expect(writer.capacity).to.equal(13);
+			expect(writer.length).to.equal(0);
 			expect(writer.toArray()).to.deep.equal([]);
 		});
 

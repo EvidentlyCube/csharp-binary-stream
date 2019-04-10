@@ -104,4 +104,14 @@ describe("BinaryWriter, string UTF-8 encoding misc tests", () =>
 			});
 		});
 	});
+
+	describe("Misc", () => {
+		it("writeChar writes only the first character of the provided string", () => {
+			const writer = new BinaryWriter();
+			writer.writeChar("O HAI", Encoding.Utf8);
+
+			expect(writer.length).to.equal(1);
+			expect(writer.toArray()).to.deep.equal(['O'.codePointAt(0)]);
+		});
+	})
 });

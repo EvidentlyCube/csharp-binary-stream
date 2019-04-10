@@ -1,3 +1,6 @@
+/**
+ * @ignore
+ */
 export const Numbers = {
 	BYTE: {
 		MIN: 0,

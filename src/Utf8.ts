@@ -30,6 +30,9 @@ interface Utf8ReadResult
 	finalPosition: number;
 }
 
+/**
+ * @ignore
+ */
 export function writeUtf8StringFromCodePoints(buffer: number[], position: number, dataToWrite: number[] | string): number
 {
 	if (typeof dataToWrite === "string") {

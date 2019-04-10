@@ -2,7 +2,7 @@ import {expect} from 'chai';
 import {BinaryWriter, Encoding} from "../src";
 import {InvalidArgumentError} from "../src/errors/InvalidArgumentError";
 
-describe("BinaryWriter, string UTF-8 negative tests", () =>
+describe("BinaryWriter, string negative tests", () =>
 {
 	describe("Invalid arguments", () =>
 	{
