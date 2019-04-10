@@ -70,7 +70,7 @@
 				<p>Add it to your project via:</p>
 				<pre><code>npm i --<span class="hljs-built_in">save</span> csharp-<span class="hljs-built_in">binary</span>-stream</code></pre><h3 id="documentation">Documentation</h3>
 				<p>The full documentation can be found <a href="https://evidentlycube.github.io/chsarp-binary-stream/index.html">here</a>. </p>
-				<p>Use the reader like this:</p>
+				<p>The reader can be used like this:</p>
 				<pre><code>import {BinaryReader, Encoding} from `csharp-binary-stream`;
 
 const reader = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryReader(<span class="hljs-params">existingArrayBuffer</span>)</span>;
@@ -78,14 +78,24 @@ const reader = <span class="hljs-keyword">new</span> <span class="hljs-construct
 const reader = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryReader(<span class="hljs-params">existingUint8Array</span>)</span>;
 <span class="hljs-comment">// or</span>
 const reader = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryReader(<span class="hljs-params">new</span> Uint8Array(<span class="hljs-params">otherTypedArray</span>.<span class="hljs-params">buffer</span>, <span class="hljs-params">otherTypedArray</span>.<span class="hljs-params">byteOffset</span>, <span class="hljs-params">otherTypedArray</span>.<span class="hljs-params">byteLength</span>)</span>);
-reader.read<span class="hljs-constructor">Byte()</span>;
-reader.read<span class="hljs-constructor">Char(Encoding.Utf8)</span>;
-reader.read<span class="hljs-constructor">Float()</span>;</code></pre><h2 id="details">Details</h2>
+console.log(reader.read<span class="hljs-constructor">Byte()</span>);
+console.log(reader.read<span class="hljs-constructor">Char(Encoding.Utf8)</span>);
+console.log(reader.read<span class="hljs-constructor">Float()</span>);</code></pre><p>While the writer like this:</p>
+				<pre><code>import {BinaryWriter, Encoding} from `csharp-binary-stream`;
+
+const writer = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryWriter()</span>;
+<span class="hljs-comment">// or</span>
+const writer = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryWriter(<span class="hljs-params">existingNumberArray</span>)</span>;
+<span class="hljs-comment">//or</span>
+const writer = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryWriter(<span class="hljs-params">existingUint8Array</span>)</span>;
+writer.write<span class="hljs-constructor">Byte(7)</span>;
+writer.write<span class="hljs-constructor">Chars(<span class="hljs-string">"Writing some text"</span>, Encoding.Utf8)</span>;
+writer.write<span class="hljs-constructor">Long(<span class="hljs-string">"12345678900012"</span>)</span>;</code></pre><h2 id="details">Details</h2>
 				<p>The validity of the compatibility with C# is achieved by comparing the data against fixtures generated in C#. Specifically, the file <code>test/fixtureSource.cs</code> is responsible for generating all the files in the directory <code>test/fixture/*</code>. Then the tests in <code>test/BinaryReader.fixtures.*.test.ts</code> attempt to read the files and compare the value provideded with static values stored in the test file.</p>
-				<p>At the moment only <code>BinaryReader</code> is supported, but <code>BinaryWriter</code> is soon to come.</p>
 				<p>There are some small well-document quirks to be aware of:</p>
 				<ul>
 					<li>Using <code>readLong</code> and <code>readUnsignedLong</code> risks losing precision with really big numbers because JavaScript only supports <code>double</code> type.</li>
+					<li>Using <code>writeLong</code> and <code>writeUnsignedLong</code> with numbers instead of strings risks losing precision with really big numbers because JavaScript only supports <code>double</code> type.</li>
 				</ul>
 				<h2 id="license">License</h2>
 				<p>This project is licensed under the MIT License - see the <a href="LICENSE.md">LICENSE.md</a> file for details</p>
@@ -108,7 +118,13 @@ reader.read<span class="hljs-constructor">Float()</span>;</code></pre><h2 id="de
 						<a href="classes/binaryreader.html" class="tsd-kind-icon">Binary<wbr>Reader</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/binarywriter.html" class="tsd-kind-icon">Binary<wbr>Writer</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/encodingerror.html" class="tsd-kind-icon">Encoding<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="classes/endofstreamerror.html" class="tsd-kind-icon">End<wbr>OfStream<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-class">
 						<a href="classes/invalidargumenterror.html" class="tsd-kind-icon">Invalid<wbr>Argument<wbr>Error</a>
