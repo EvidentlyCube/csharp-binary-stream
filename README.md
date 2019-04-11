@@ -1,4 +1,6 @@
-# CSharp Binary Stream
+# CSharp Binary Stream 
+
+[![Build Status](https://travis-ci.com/EvidentlyCube/csharp-binary-stream.svg?branch=master)](https://travis-ci.com/EvidentlyCube/csharp-binary-stream)
 
 Binary stream writing and reading classes compatible with CSharp's [BinaryReader](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader?view=netframework-4.7.2) and [BinaryWriter](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter?view=netframework-4.7.2).
 
@@ -61,3 +63,8 @@ There are some small well-document quirks to be aware of:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Links
+
+ * [NPM](https://www.npmjs.com/package/csharp-binary-stream)
+ * [Travis-ci](https://travis-ci.com/EvidentlyCube/csharp-binary-stream) 
