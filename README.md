@@ -1,6 +1,6 @@
 # CSharp Binary Stream
 
-Binary stream writing and reading classes compatible with CSharp's [BinaryReader](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader?view=netframework-4.7.2] and [BinaryWriter](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter?view=netframework-4.7.2).
+Binary stream writing and reading classes compatible with CSharp's [BinaryReader](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader?view=netframework-4.7.2) and [BinaryWriter](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter?view=netframework-4.7.2).
 
 ## Getting Started
 
