@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {BinaryReader} from "../src";
-import {getBufferOfLength} from "./common";
+import {getBufferArray, getBufferOfLength} from "./common";
 
 describe("BinaryReader, number misc tests", () =>
 {
@@ -17,6 +17,24 @@ describe("BinaryReader, number misc tests", () =>
 			const reader = new BinaryReader(getBufferOfLength(16));
 			reader.readByte();
 			expect(reader.position).to.equal(1);
+		});
+		it("readBytes(0) - advance by 0 bytes", () =>
+		{
+			const reader = new BinaryReader(getBufferOfLength(16));
+			reader.readBytes(0);
+			expect(reader.position).to.equal(0);
+		});
+		it("readBytes(1) - advance by 1 byte", () =>
+		{
+			const reader = new BinaryReader(getBufferOfLength(16));
+			reader.readBytes(1);
+			expect(reader.position).to.equal(1);
+		});
+		it("readBytes(7) - advance by 7 bytes", () =>
+		{
+			const reader = new BinaryReader(getBufferOfLength(16));
+			reader.readBytes(7);
+			expect(reader.position).to.equal(7);
 		});
 		it("readSignedByte - advance by 2 bytes", () =>
 		{
@@ -85,4 +103,15 @@ describe("BinaryReader, number misc tests", () =>
 			expect(reader.position).to.equal(8);
 		});
 	});
+
+	describe('Correct return', () => {
+		const bytes = [0, 17, 42, 128, 255];
+		[0, 1, 2, 3, 4, 5].forEach(bytesToRead => {
+			it(`readBytes(${bytesToRead}) - should correctly read the bytes`, () => {
+				const reader = new BinaryReader(getBufferArray(bytes));
+				const readBytes = reader.readBytes(bytesToRead);
+				expect(readBytes).to.deep.equal(bytes.slice(0, bytesToRead));
+			});
+		})
+	})
 });

@@ -141,6 +141,30 @@ export class BinaryReader
 	}
 
 	/**
+	 * Reads a specified number of  `byte`s (unsigned 8-bit number)  from the stream and advances the stream by the requested number of bytes.
+	 *
+	 * @param {number} bytesToRead The number of bytes to read from the stream. must be an integer larger or equal than zero.
+	 * @returns {number[]} Array of bytes (numbers between 0 and 255) read from the stream. If `bytesToRead` is `0` it returns an empty array.
+	 * @throws [[InvalidArgumentError]] when `bytesToRead` is less than zero.
+	 * @throws [[EndOfStreamError]] Thrown when there are no bytes left in the stream.
+	 * @link [C# `BinaryReader.ReadBytes` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readbytes?view=netframework-4.7.2)
+	 */
+	public readBytes(bytesToRead: number): number[]
+	{
+		if (bytesToRead < 0) {
+			throw new InvalidArgumentError('Cannot read less than 0 bytes', 'bytesToRead', bytesToRead);
+		}
+
+		this.assertRemainingBytes(bytesToRead, 'readBytes');
+
+		const result = [];
+		for(let i = 0; i < bytesToRead; i++) {
+			result[i] = this._view[this._position++];
+		}
+		return result;
+	}
+
+	/**
 	 * Reads a `signed byte` (signed 8-bit number)  from the stream and advances the stream by one byte.
 	 *
 	 * @returns {number} Number between -128 and 127.
