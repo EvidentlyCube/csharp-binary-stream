@@ -142,7 +142,17 @@ export class BinaryReader
 
 	public readBytes(bytesToRead: number): number[]
 	{
-		return [];
+		if (bytesToRead < 0) {
+			throw new InvalidArgumentError('Cannot read less than 0 bytes', 'bytesToRead', bytesToRead);
+		}
+
+		this.assertRemainingBytes(bytesToRead, 'readBytes');
+
+		const result = [];
+		for(let i = 0; i < bytesToRead; i++) {
+			result[i] = this._view[this._position++];
+		}
+		return result;
 	}
 
 	/**
