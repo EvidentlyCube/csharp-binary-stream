@@ -3,6 +3,7 @@ import {BinaryReader, Encoding, EndOfStreamError, InvalidUtf8CharacterError} fro
 import {getBufferArray, getBufferBinary, getBufferHex, getBufferOfLength, getUtf8CharArray} from "./common";
 import * as Utf8 from "../src/Utf8";
 import {EndOfStreamMessageFactory, InvalidUtf8CharacterMessageFactory} from "../src/errors/ErrorMessageFactory";
+import {InvalidArgumentError} from "../src/errors/InvalidArgumentError";
 
 const lead2 = Utf8.leadingByteLength2Prefix;
 const lead3 = Utf8.leadingByteLength3Prefix;
@@ -23,6 +24,18 @@ describe("BinaryReader, number negative tests", () =>
 		{
 			const reader = new BinaryReader(getBufferOfLength(0));
 			expect(() => reader.readByte()).to.throw(EndOfStreamError, EndOfStreamMessageFactory.notEnoughBytesInBuffer(1, 0, 'readByte'));
+		});
+
+		it('readBytes (starting read at the end)', () =>
+		{
+			const reader = new BinaryReader(getBufferOfLength(0));
+			expect(() => reader.readBytes(5)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.notEnoughBytesInBuffer(5, 0, 'readBytes'));
+		});
+
+		it('readBytes (starting before the end)', () =>
+		{
+			const reader = new BinaryReader(getBufferOfLength(5));
+			expect(() => reader.readBytes(10)).to.throw(EndOfStreamError, EndOfStreamMessageFactory.notEnoughBytesInBuffer(10, 5, 'readBytes'));
 		});
 
 		it('readSignedByte', () =>
@@ -496,4 +509,12 @@ describe("BinaryReader, number negative tests", () =>
 			expect(() => reader.readChar(Encoding.Utf8)).to.throw(InvalidUtf8CharacterError, InvalidUtf8CharacterMessageFactory.notContinuationByte(0, 3, 0xFF));
 		});
 	});
+
+	describe('InvalidArgumentError - readBytes', () => {
+		it("Should fail if trying to read negative bytes", () => {
+			const reader = new BinaryReader(getBufferOfLength(0));
+
+			expect(() => reader.readBytes(-1)).to.throw(InvalidArgumentError);
+		});
+	})
 });

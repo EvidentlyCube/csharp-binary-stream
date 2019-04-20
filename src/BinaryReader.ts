@@ -140,6 +140,11 @@ export class BinaryReader
 		return byte;
 	}
 
+	public readBytes(bytesToRead: number): number[]
+	{
+		return [];
+	}
+
 	/**
 	 * Reads a `signed byte` (signed 8-bit number)  from the stream and advances the stream by one byte.
 	 *
