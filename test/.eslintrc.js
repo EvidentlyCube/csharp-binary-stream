@@ -4,6 +4,7 @@ module.exports = {
 	extends: ['plugin:@typescript-eslint/recommended'],
 	rules: {
 		"@typescript-eslint/indent": ["error", 'tab'],
-		"@typescript-eslint/no-explicit-any": [0]
+		"@typescript-eslint/no-explicit-any": [0],
+		"@typescript-eslint/explicit-function-return-type": [0]
 	}
 };

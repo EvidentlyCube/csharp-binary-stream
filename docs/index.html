@@ -62,14 +62,23 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<h1 id="csharp-binary-stream">CSharp Binary Stream</h1>
+				<a href="#csharp-binary-stream" id="csharp-binary-stream" style="color: inherit; text-decoration: none;">
+					<h1>CSharp Binary Stream</h1>
+				</a>
 				<p><a href="https://travis-ci.com/EvidentlyCube/csharp-binary-stream"><img src="https://travis-ci.com/EvidentlyCube/csharp-binary-stream.svg?branch=master" alt="Build Status"></a></p>
 				<p>Binary stream writing and reading classes compatible with CSharp&#39;s <a href="https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader?view=netframework-4.7.2">BinaryReader</a> and <a href="https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter?view=netframework-4.7.2">BinaryWriter</a>.</p>
-				<h2 id="getting-started">Getting Started</h2>
+				<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
+					<h2>Getting Started</h2>
+				</a>
 				<p>This library was written in TypeScript but will also work in projects written in JavaScript.</p>
-				<h3 id="installing">Installing</h3>
+				<a href="#installing" id="installing" style="color: inherit; text-decoration: none;">
+					<h3>Installing</h3>
+				</a>
 				<p>Add it to your project via:</p>
-				<pre><code>npm i --<span class="hljs-built_in">save</span> csharp-<span class="hljs-built_in">binary</span>-stream</code></pre><h3 id="documentation">Documentation</h3>
+				<pre><code>npm i --<span class="hljs-built_in">save</span> csharp-<span class="hljs-built_in">binary</span>-stream</code></pre>
+				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
+					<h3>Documentation</h3>
+				</a>
 				<p>The full documentation can be found <a href="https://evidentlycube.github.io/chsarp-binary-stream/index.html">here</a>. </p>
 				<p>The reader can be used like this:</p>
 				<pre><code>import {BinaryReader, Encoding} from `csharp-binary-stream`;
@@ -91,16 +100,23 @@ const writer = <span class="hljs-keyword">new</span> <span class="hljs-construct
 const writer = <span class="hljs-keyword">new</span> <span class="hljs-constructor">BinaryWriter(<span class="hljs-params">existingUint8Array</span>)</span>;
 writer.write<span class="hljs-constructor">Byte(7)</span>;
 writer.write<span class="hljs-constructor">Chars(<span class="hljs-string">"Writing some text"</span>, Encoding.Utf8)</span>;
-writer.write<span class="hljs-constructor">Long(<span class="hljs-string">"12345678900012"</span>)</span>;</code></pre><h2 id="details">Details</h2>
+writer.write<span class="hljs-constructor">Long(<span class="hljs-string">"12345678900012"</span>)</span>;</code></pre>
+				<a href="#details" id="details" style="color: inherit; text-decoration: none;">
+					<h2>Details</h2>
+				</a>
 				<p>The validity of the compatibility with C# is achieved by comparing the data against fixtures generated in C#. Specifically, the file <code>test/fixtureSource.cs</code> is responsible for generating all the files in the directory <code>test/fixture/*</code>. Then the tests in <code>test/BinaryReader.fixtures.*.test.ts</code> attempt to read the files and compare the value provideded with static values stored in the test file.</p>
 				<p>There are some small well-document quirks to be aware of:</p>
 				<ul>
 					<li>Using <code>readLong</code> and <code>readUnsignedLong</code> risks losing precision with really big numbers because JavaScript only supports <code>double</code> type.</li>
 					<li>Using <code>writeLong</code> and <code>writeUnsignedLong</code> with numbers instead of strings risks losing precision with really big numbers because JavaScript only supports <code>double</code> type.</li>
 				</ul>
-				<h2 id="license">License</h2>
+				<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+					<h2>License</h2>
+				</a>
 				<p>This project is licensed under the MIT License - see the <a href="LICENSE.md">LICENSE.md</a> file for details</p>
-				<h2 id="links">Links</h2>
+				<a href="#links" id="links" style="color: inherit; text-decoration: none;">
+					<h2>Links</h2>
+				</a>
 				<ul>
 					<li><a href="https://www.npmjs.com/package/csharp-binary-stream">NPM</a></li>
 					<li><a href="https://travis-ci.com/EvidentlyCube/csharp-binary-stream">Travis-ci</a> </li>
@@ -158,6 +174,7 @@ writer.write<span class="hljs-constructor">Long(<span class="hljs-string">"12345
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
@@ -206,7 +223,7 @@ writer.write<span class="hljs-constructor">Long(<span class="hljs-string">"12345
 	</div>
 </footer>
 <div class="container tsd-generator">
-	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>

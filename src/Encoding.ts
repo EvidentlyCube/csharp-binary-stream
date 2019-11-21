@@ -8,5 +8,5 @@ const allEncodings = Object.values(Encoding);
 
 /** @ignore*/
 export function isValidEncoding(value: Encoding|string): boolean {
-	return allEncodings.includes(value);
+	return allEncodings.includes(value as Encoding);
 }

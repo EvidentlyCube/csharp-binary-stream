@@ -1,6 +1,6 @@
 {
   "name": "csharp-binary-stream",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Library compatible with C#'s BinaryReader class",
   "main": "dist/index.js",
   "files": [
@@ -31,19 +31,19 @@
   },
   "devDependencies": {
     "@types/big-integer": "0.0.31",
-    "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.6",
-    "@types/node": "^7.10.5",
-    "@typescript-eslint/eslint-plugin": "^1.5.0",
-    "@typescript-eslint/parser": "^1.5.0",
+    "@types/chai": "^4.2.5",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^11.15.2",
+    "@typescript-eslint/eslint-plugin": "^2.8.0",
+    "@typescript-eslint/parser": "^2.8.0",
     "chai": "^4.2.0",
-    "eslint": "^5.16.0",
-    "mocha": "^6.0.2",
+    "eslint": "^6.6.0",
+    "mocha": "^6.2.2",
     "replace-in-file": "^3.4.4",
-    "ts-node": "^8.0.3",
-    "typedoc": "^0.14.2",
+    "ts-node": "^8.5.2",
+    "typedoc": "^0.15.2",
     "typedoc-twilio-theme": "^1.0.0",
-    "typescript": "^3.4.1"
+    "typescript": "^3.7.2"
   },
   "dependencies": {
     "big-integer": "^1.6.43"
