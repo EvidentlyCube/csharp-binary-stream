@@ -83,5 +83,13 @@ describe("BinaryReader, common tests", () =>
 			const reader = new BinaryReader(getBufferOfLength(0));
 			expect(reader.isEndOfStream).to.equal(true);
 		});
+		it("Should return true when at the end of stream that has data outside the view", () =>
+		{
+			const buffer = new ArrayBuffer(16);
+			const view = new Uint8Array(buffer, 4, 8);
+			const reader = new BinaryReader(view);
+			reader.position = 8;
+			expect(reader.isEndOfStream).to.equal(true);
+		});
 	});
 });

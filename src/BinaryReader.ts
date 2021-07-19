@@ -53,7 +53,7 @@ export class BinaryReader
 	 */
 	public get isEndOfStream(): boolean
 	{
-		return this._position >= this._stream.byteLength;
+		return this._position >= this._bufferLength;
 	}
 
 	private get internalPosition(): number
