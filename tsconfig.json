@@ -9,8 +9,7 @@
 		"declaration": true,
 		"allowJs": false,
 		"strict": true,
-		"strictNullChecks": false,
-		"rootDir": "src"
+		"strictNullChecks": false
 	},
 	"include": [
 		"./src"
