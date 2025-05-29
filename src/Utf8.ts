@@ -1,7 +1,7 @@
-import {InvalidUtf8CharacterError} from "./errors/InvalidUtf8CharacterError";
-import {InvalidUtf8CharacterMessageFactory, EndOfStreamMessageFactory} from "./errors/ErrorMessageFactory";
-import {EndOfStreamError} from "./errors/EndOfStreamError";
-import {InvalidArgumentError} from "./errors/InvalidArgumentError";
+import { InvalidUtf8CharacterError } from "./errors/InvalidUtf8CharacterError";
+import { InvalidUtf8CharacterMessageFactory, EndOfStreamMessageFactory } from "./errors/ErrorMessageFactory";
+import { EndOfStreamError } from "./errors/EndOfStreamError";
+import { InvalidArgumentError } from "./errors/InvalidArgumentError";
 
 /** @ignore */
 export const leadingByteLength1Prefix = parseInt("00000000", 2); // b0xxxxxxx
@@ -18,14 +18,12 @@ export const continuationBytePrefix = parseInt("10000000", 2); // b10xxxxxx
 export const continuationByteMask = parseInt("11000000", 2); // b11000000
 
 /** @ignore */
-export function isUtf8ContinuationCharacter(byte: number): boolean
-{
+export function isUtf8ContinuationCharacter(byte: number): boolean {
 	return (byte & continuationByteMask) === continuationBytePrefix;
 }
 
 /** @ignore*/
-interface Utf8ReadResult
-{
+interface Utf8ReadResult {
 	readString: string;
 	finalPosition: number;
 }
@@ -33,13 +31,12 @@ interface Utf8ReadResult
 /**
  * @ignore
  */
-export function writeUtf8StringFromCodePoints(buffer: number[], position: number, dataToWrite: number[] | string): number
-{
+export function writeUtf8StringFromCodePoints(buffer: number[], position: number, dataToWrite: number[] | string): number {
 	if (typeof dataToWrite === "string") {
 		dataToWrite = Array.from(dataToWrite).map(x => x.codePointAt(0));
 	}
 
-	for(let i = 0; i < dataToWrite.length; i++) {
+	for (let i = 0; i < dataToWrite.length; i++) {
 		const codepoint = dataToWrite[i];
 		if (Number.isNaN(codepoint) || !Number.isFinite(codepoint) || codepoint < 0) {
 			throw new InvalidArgumentError(`Codepoint at position #${i} in the UTF-8 data-to-write is not valid, should be non-negative integer.`, 'dataToWrite', codepoint);
@@ -69,8 +66,7 @@ export function writeUtf8StringFromCodePoints(buffer: number[], position: number
 }
 
 /** @ignore */
-export function readUtf8StringFromBytes(bytes: Uint8Array, position: number, maxCharactersToRead: number = Number.MAX_SAFE_INTEGER, maxBytesToRead: number = Number.MAX_SAFE_INTEGER): Utf8ReadResult
-{
+export function readUtf8StringFromBytes(bytes: Uint8Array, position: number, maxCharactersToRead: number = Number.MAX_SAFE_INTEGER, maxBytesToRead: number = Number.MAX_SAFE_INTEGER): Utf8ReadResult {
 	const maxFinalPosition = Math.min(bytes.length, position + maxBytesToRead);
 	let readString = '';
 	let readCharacters = 0;

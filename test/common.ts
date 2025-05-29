@@ -1,34 +1,35 @@
 import * as Utf8 from '../src/Utf8';
 
-export function getBufferOfLength(length: number): ArrayBuffer
-{
+export function getBufferOfLength(length: number): ArrayBuffer {
 	const uint8Array = new Uint8Array(length);
 
 	return uint8Array.buffer.slice(uint8Array.byteOffset, uint8Array.byteOffset + uint8Array.byteLength);
 }
 
-export function getBufferArray(bytes: number[]): ArrayBuffer
-{
+export function getBufferArray(bytes: number[]): ArrayBuffer {
 	const uint8Array = new Uint8Array(bytes);
 
 	return uint8Array.buffer.slice(uint8Array.byteOffset, uint8Array.byteOffset + uint8Array.byteLength);
 }
 
-export function getBufferBinary(binary: string): ArrayBuffer
-{
+export function getBufferBinary(binary: string): ArrayBuffer {
 	binary = binary.replace(/[^01]/g, '');
 
 	if (binary.length % 8 !== 0) {
 		throw new Error("Provided binary data should have length being multiply of 8.");
 	}
 
-	const byteArray = binary.match(/.{8}/g).map(x => parseInt(x, 2));
+	const matches = binary.match(/.{8}/g);
+	if (!matches) {
+		throw new Error("Binary did not match");
+	}
+
+	const byteArray = matches.map(x => parseInt(x, 2));
 
 	return getBufferArray(byteArray);
 }
 
-export function getArrayHex(hex: string): number[]
-{
+export function getArrayHex(hex: string): number[] {
 	hex = hex.replace(/[^0123456789abcdef]/gi, '');
 
 	if (hex.length % 2 !== 0) {
@@ -38,13 +39,11 @@ export function getArrayHex(hex: string): number[]
 	return hex.match(/.{2}/g).map(x => parseInt(x, 16));
 }
 
-export function getBufferHex(hex: string): ArrayBuffer
-{
+export function getBufferHex(hex: string): ArrayBuffer {
 	return getBufferArray(getArrayHex(hex));
 }
 
-export function writeUtf8Character(array: number[], position: number, charLength: number): void
-{
+export function writeUtf8Character(array: number[], position: number, charLength: number): void {
 	if (charLength === 1) {
 		array[position] = Utf8.leadingByteLength1Prefix;
 
@@ -68,8 +67,7 @@ export function writeUtf8Character(array: number[], position: number, charLength
 	}
 }
 
-export function getUtf8CharArray(charLength: number, totalBufferLength?: number): number[]
-{
+export function getUtf8CharArray(charLength: number, totalBufferLength?: number): number[] {
 	if (totalBufferLength === undefined) {
 		totalBufferLength = charLength;
 	}
@@ -87,10 +85,8 @@ export function getUtf8CharArray(charLength: number, totalBufferLength?: number)
 
 type BufferLike = ArrayBuffer | Buffer | Uint8Array | number[];
 
-export function combineBuffers(...buffers: BufferLike[]): number[]
-{
-	return buffers.map(bufferLike =>
-	{
+export function combineBuffers(...buffers: BufferLike[]): number[] {
+	return buffers.map(bufferLike => {
 		if (bufferLike instanceof ArrayBuffer) {
 			return Array.from(new Uint8Array(bufferLike));
 		} else if (bufferLike instanceof Uint8Array) {

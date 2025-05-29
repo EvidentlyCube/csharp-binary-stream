@@ -1,9 +1,8 @@
-import {EndOfStreamError} from "./errors/EndOfStreamError";
-import {EndOfStreamMessageFactory} from "./errors/ErrorMessageFactory";
+import { EndOfStreamError } from "./errors/EndOfStreamError";
+import { EndOfStreamMessageFactory } from "./errors/ErrorMessageFactory";
 
 /** @ignore */
-export function read7BitEncodedInt(position: number, buffer: Uint8Array): [number, number]
-{
+export function read7BitEncodedInt(position: number, buffer: Uint8Array): [number, number] {
 	// Read out an Int32 7 bits at a time.  The high bit
 	// of the byte when on means to continue reading more bytes.
 	let count = 0;

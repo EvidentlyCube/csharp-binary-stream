@@ -6,42 +6,40 @@ describe("BinaryWriter, string UTF-8 encoding misc tests", () =>
 {
 	const testStrings = getTestStrings();
 
-	const advanceTests: { [key: string]: [any, number] | [any, number, string] } = {
-		'writeChar:0x0034': [0x0034, 1, 'writeChar'],
-		'writeChar:0x00A9': [0x00A9, 2, 'writeChar'],
-		'writeChar:0x2C01': [0x2C01, 3, 'writeChar'],
-		'writeChar:0x1F130': [0x1F130, 4, 'writeChar'],
-		'writeChar:4': [String.fromCodePoint(0x0034), 1, 'writeChar'],
-		'writeChar:©': [String.fromCodePoint(0x00A9), 2, 'writeChar'],
-		'writeChar:Ⰱ': [String.fromCodePoint(0x2C01), 3, 'writeChar'],
-		'writeChar:🄰': [String.fromCodePoint(0x1F130), 4, 'writeChar'],
-		'writeChars:4x 0x0034': [[0x0034, 0x0034, 0x0034, 0x0034], 4, 'writeChars'],
-		'writeChars:4x 0x00A9': [[0x00A9, 0x00A9, 0x00A9, 0x00A9], 8, 'writeChars'],
-		'writeChars:4x 0x2C01': [[0x2C01, 0x2C01, 0x2C01, 0x2C01], 12, 'writeChars'],
-		'writeChars:4x 0x1F130': [[0x1F130, 0x1F130, 0x1F130, 0x1F130], 16, 'writeChars'],
-		'writeChars:fourDifferentUtf8 as numbers': [[0x0034, 0x00A9, 0x2C01, 0x1F130], 10, 'writeChars'],
-		'writeChars:4x 4': [String.fromCodePoint(0x0034, 0x0034, 0x0034, 0x0034), 4, 'writeChars'],
-		'writeChars:4x ©': [String.fromCodePoint(0x00A9, 0x00A9, 0x00A9, 0x00A9), 8, 'writeChars'],
-		'writeChars:4x Ⰱ': [String.fromCodePoint(0x2C01, 0x2C01, 0x2C01, 0x2C01), 12, 'writeChars'],
-		'writeChars:4x 🄰': [String.fromCodePoint(0x1F130, 0x1F130, 0x1F130, 0x1F130), 16, 'writeChars'],
-		'writeChars:fourDifferentUtf8 as string': [String.fromCodePoint(0x0034, 0x00A9, 0x2C01, 0x1F130), 10, 'writeChars'],
-		'writeString:1-byte prefix as string': [testStrings[0], 110, 'writeString'],
-		'writeString:2-byte prefix as string': [testStrings[1], 1092, 'writeString'],
-		'writeString:3-byte prefix as string': [testStrings[2], 21803, 'writeString'],
+	const advanceTests: Record<string, [(writer: BinaryWriter) => void, number]> = {
+		'writeChar:0x0034': [w => w.writeChar(0x0034, Encoding.Utf8), 1],
+		'writeChar:0x00A9': [w => w.writeChar(0x00A9, Encoding.Utf8), 2],
+		'writeChar:0x2C01': [w => w.writeChar(0x2C01, Encoding.Utf8), 3],
+		'writeChar:0x1F130': [w => w.writeChar(0x1F130, Encoding.Utf8), 4],
+		'writeChar:4': [w => w.writeChar(String.fromCodePoint(0x0034), Encoding.Utf8), 1],
+		'writeChar:©': [w => w.writeChar(String.fromCodePoint(0x00A9), Encoding.Utf8), 2],
+		'writeChar:Ⰱ': [w => w.writeChar(String.fromCodePoint(0x2C01), Encoding.Utf8), 3],
+		'writeChar:🄰': [w => w.writeChar(String.fromCodePoint(0x1F130), Encoding.Utf8), 4],
+		'writeChars:4x 0x0034': [w => w.writeChars([0x0034, 0x0034, 0x0034, 0x0034], Encoding.Utf8), 4],
+		'writeChars:4x 0x00A9': [w => w.writeChars([0x00A9, 0x00A9, 0x00A9, 0x00A9], Encoding.Utf8), 8],
+		'writeChars:4x 0x2C01': [w => w.writeChars([0x2C01, 0x2C01, 0x2C01, 0x2C01], Encoding.Utf8), 12],
+		'writeChars:4x 0x1F130': [w => w.writeChars([0x1F130, 0x1F130, 0x1F130, 0x1F130], Encoding.Utf8), 16],
+		'writeChars:fourDifferentUtf8 as numbers': [w => w.writeChars([0x0034, 0x00A9, 0x2C01, 0x1F130], Encoding.Utf8), 10],
+		'writeChars:4x 4': [w => w.writeChars(String.fromCodePoint(0x0034, 0x0034, 0x0034, 0x0034), Encoding.Utf8), 4],
+		'writeChars:4x ©': [w => w.writeChars(String.fromCodePoint(0x00A9, 0x00A9, 0x00A9, 0x00A9), Encoding.Utf8), 8],
+		'writeChars:4x Ⰱ': [w => w.writeChars(String.fromCodePoint(0x2C01, 0x2C01, 0x2C01, 0x2C01), Encoding.Utf8), 12],
+		'writeChars:4x 🄰': [w => w.writeChars(String.fromCodePoint(0x1F130, 0x1F130, 0x1F130, 0x1F130), Encoding.Utf8), 16],
+		'writeChars:fourDifferentUtf8 as string': [w => w.writeChars(String.fromCodePoint(0x0034, 0x00A9, 0x2C01, 0x1F130), Encoding.Utf8), 10],
+		'writeString:1-byte prefix as string': [w => w.writeString(testStrings[0], Encoding.Utf8), 110],
+		'writeString:2-byte prefix as string': [w => w.writeString(testStrings[1], Encoding.Utf8), 1092],
+		'writeString:3-byte prefix as string': [w => w.writeString(testStrings[2], Encoding.Utf8), 21803],
 	};
 
 	describe("Writing advances position", () =>
 	{
-		Object.entries(advanceTests).forEach(entry =>
+		Object.entries(advanceTests).forEach(([testName, args]) =>
 		{
-			const testName: string = entry[0];
-			const [argument, bytesToWrite] = entry[1];
-			const methodName = entry[1].length > 2 ? entry[1][2] : testName;
+			const [executor, bytesToWrite] = args;
 
 			it(`${testName} - advance by ${bytesToWrite} bytes`, () =>
 			{
 				const writer = new BinaryWriter();
-				(writer as any)[methodName](argument, Encoding.Utf8);
+				executor(writer);
 				expect(writer.position).to.equal(bytesToWrite);
 			});
 		});
@@ -49,16 +47,14 @@ describe("BinaryWriter, string UTF-8 encoding misc tests", () =>
 
 	describe("Writing updates length, when writing at the end of the stream starting from zero", () =>
 	{
-		Object.entries(advanceTests).forEach(entry =>
+		Object.entries(advanceTests).forEach(([testName, args]) =>
 		{
-			const testName: string = entry[0];
-			const [argument, bytesToWrite] = entry[1];
-			const methodName = entry[1].length > 2 ? entry[1][2] : testName;
+			const [executor, bytesToWrite] = args;
 
 			it(`${testName} - increase length by ${bytesToWrite} bytes`, () =>
 			{
 				const writer = new BinaryWriter();
-				(writer as any)[methodName](argument, Encoding.Utf8);
+				executor(writer);
 				expect(writer.length).to.equal(bytesToWrite);
 			});
 		});
@@ -66,18 +62,16 @@ describe("BinaryWriter, string UTF-8 encoding misc tests", () =>
 
 	describe("Writing updates length, when writing at the end of the stream starting from more than zero", () =>
 	{
-		Object.entries(advanceTests).forEach(entry =>
+		Object.entries(advanceTests).forEach(([testName, args]) =>
 		{
-			const testName: string = entry[0];
-			const [argument, bytesToWrite] = entry[1];
-			const methodName = entry[1].length > 2 ? entry[1][2] : testName;
+			const [executor, bytesToWrite] = args;
 
 			it(`${testName} - increase length by ${bytesToWrite} bytes`, () =>
 			{
 				const writer = new BinaryWriter();
 				writer.writeBytes([0, 0, 0, 0, 0, 0, 0]);
 
-				(writer as any)[methodName](argument, Encoding.Utf8);
+				executor(writer);
 				expect(writer.length).to.equal(bytesToWrite + 7);
 			});
 		});
@@ -85,11 +79,9 @@ describe("BinaryWriter, string UTF-8 encoding misc tests", () =>
 
 	describe("Writing updates length if necessary when writing from one byte before the end of the stream", () =>
 	{
-		Object.entries(advanceTests).forEach(entry =>
+		Object.entries(advanceTests).forEach(([testName, args]) =>
 		{
-			const testName: string = entry[0];
-			const [argument, bytesToWrite] = entry[1];
-			const methodName = entry[1].length > 2 ? entry[1][2] : testName;
+			const [executor, bytesToWrite] = args;
 
 			const expectedIncrease = Math.max(0, bytesToWrite - 1);
 
@@ -99,7 +91,7 @@ describe("BinaryWriter, string UTF-8 encoding misc tests", () =>
 				writer.writeBytes([0, 0, 0, 0, 0, 0, 0]);
 				writer.position--;
 
-				(writer as any)[methodName](argument, Encoding.Utf8);
+				executor(writer);
 				expect(writer.length).to.equal(7 + expectedIncrease);
 			});
 		});

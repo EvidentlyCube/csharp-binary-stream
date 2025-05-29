@@ -34,16 +34,16 @@
     "@types/chai": "^4.2.5",
     "@types/mocha": "^5.2.7",
     "@types/node": "^11.15.2",
-    "@typescript-eslint/eslint-plugin": "^2.8.0",
-    "@typescript-eslint/parser": "^2.8.0",
+    "@typescript-eslint/eslint-plugin": "^8.33.0",
+    "@typescript-eslint/parser": "^8.33.0",
     "chai": "^4.2.0",
-    "eslint": "^6.6.0",
-    "mocha": "^6.2.2",
+    "eslint": "^9.27.0",
+    "mocha": "^11.5.0",
     "replace-in-file": "^3.4.4",
     "ts-node": "^8.5.2",
-    "typedoc": "^0.15.2",
+    "typedoc": "^0.28.5",
     "typedoc-twilio-theme": "^1.0.0",
-    "typescript": "^3.7.2"
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "big-integer": "^1.6.43"

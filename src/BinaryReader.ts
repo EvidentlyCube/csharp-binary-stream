@@ -1,19 +1,18 @@
-import {Encoding, isValidEncoding} from "./Encoding";
+import { Encoding, isValidEncoding } from "./Encoding";
 import * as bigInt from 'big-integer';
-import {EndOfStreamError} from "./errors/EndOfStreamError";
+import { EndOfStreamError } from "./errors/EndOfStreamError";
 import * as Utf8 from './Utf8';
 import * as Int7 from './Int7';
-import {EncodingMessageFactory, EndOfStreamMessageFactory} from "./errors/ErrorMessageFactory";
-import {EncodingError} from "./errors/EncodingError";
-import {InvalidArgumentError} from "./errors/InvalidArgumentError";
+import { EncodingMessageFactory, EndOfStreamMessageFactory } from "./errors/ErrorMessageFactory";
+import { EncodingError } from "./errors/EncodingError";
+import { InvalidArgumentError } from "./errors/InvalidArgumentError";
 
 /**
  * A binary stream reader compatible with majority of methods in C#'s [BinaryReader](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader?view=netframework-4.7.2).
  *
  * Any time the word _stream_ is used in the documentation it refers to the `ArrayBuffer` provided in the constructor of this class.
  */
-export class BinaryReader
-{
+export class BinaryReader {
 	private _stream: ArrayBuffer;
 	private _view: Uint8Array;
 
@@ -25,16 +24,14 @@ export class BinaryReader
 	/**
 	 * Length of the stream, in bytes loaded, into the reader.
 	 */
-	public get length(): number
-	{
+	public get length(): number {
 		return this._bufferLength;
 	}
 
 	/**
 	 * Return the current position in the stream from which the read operations happen.
 	 */
-	public get position(): number
-	{
+	public get position(): number {
 		return this._position;
 	}
 
@@ -43,29 +40,25 @@ export class BinaryReader
 	 * Trying to set it to value smaller than `0` will set it to `0` instead (the beginning of the stream).
 	 * Trying to set it to value larger than `length` will set it to `length` instead (the end of the stream).
 	 */
-	public set position(value: number)
-	{
+	public set position(value: number) {
 		this._position = Math.max(0, Math.min(this._stream.byteLength, value));
 	}
 
 	/**
 	 * Returns true if the `position` of the stream is past the final byte (equal to `length`).
 	 */
-	public get isEndOfStream(): boolean
-	{
+	public get isEndOfStream(): boolean {
 		return this._position >= this._stream.byteLength;
 	}
 
-	private get internalPosition(): number
-	{
+	private get internalPosition(): number {
 		return this._position + this._bufferStart;
 	}
 
 	/**
 	 * @ignore
 	 */
-	private get remainingBytes(): number
-	{
+	private get remainingBytes(): number {
 		return this.length - this.position;
 	}
 
@@ -86,8 +79,7 @@ export class BinaryReader
 	 *
 	 * @param {ArrayBuffer|Uint8Array} stream Stream from which to read the data.
 	 */
-	public constructor(stream: ArrayBuffer | Uint8Array)
-	{
+	public constructor(stream: ArrayBuffer | Uint8Array) {
 		if (stream instanceof ArrayBuffer) {
 			this._stream = stream;
 			this._view = new Uint8Array(stream);
@@ -113,8 +105,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are no bytes left in the stream.
 	 * @link [C# `BinaryReader.ReadBoolean` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readboolean?view=netframework-4.7.2)
 	 */
-	public readBoolean(): boolean
-	{
+	public readBoolean(): boolean {
 		this.assertRemainingBytes(1, 'readBoolean');
 
 		const byte = this._view[this._position];
@@ -130,8 +121,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are no bytes left in the stream.
 	 * @link [C# `BinaryReader.ReadByte` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readbyte?view=netframework-4.7.2)
 	 */
-	public readByte(): number
-	{
+	public readByte(): number {
 		this.assertRemainingBytes(1, 'readByte');
 
 		const byte = this._view[this._position];
@@ -149,8 +139,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are no bytes left in the stream.
 	 * @link [C# `BinaryReader.ReadBytes` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readbytes?view=netframework-4.7.2)
 	 */
-	public readBytes(bytesToRead: number): number[]
-	{
+	public readBytes(bytesToRead: number): number[] {
 		if (bytesToRead < 0) {
 			throw new InvalidArgumentError('Cannot read less than 0 bytes', 'bytesToRead', bytesToRead);
 		}
@@ -158,7 +147,7 @@ export class BinaryReader
 		this.assertRemainingBytes(bytesToRead, 'readBytes');
 
 		const result = [];
-		for(let i = 0; i < bytesToRead; i++) {
+		for (let i = 0; i < bytesToRead; i++) {
 			result[i] = this._view[this._position++];
 		}
 		return result;
@@ -171,8 +160,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are no bytes left in the stream.
 	 * @link [C# `BinaryReader.ReadSByte` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readsbyte?view=netframework-4.7.2)
 	 */
-	public readSignedByte(): number
-	{
+	public readSignedByte(): number {
 		this.assertRemainingBytes(1, 'readSignedByte');
 
 		const byte = this._view[this._position];
@@ -190,8 +178,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadInt16` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint16?view=netframework-4.7.2)
 	 */
-	public readShort(): number
-	{
+	public readShort(): number {
 		this.assertRemainingBytes(2, 'readShort');
 
 		const byte1 = this._view[this._position];
@@ -212,8 +199,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadUInt16` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint16?view=netframework-4.7.2)
 	 */
-	public readUnsignedShort(): number
-	{
+	public readUnsignedShort(): number {
 		this.assertRemainingBytes(2, 'readUnsignedShort');
 
 		const byte1 = this._view[this._position];
@@ -230,8 +216,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadInt32` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint32?view=netframework-4.7.2)
 	 */
-	public readInt(): number
-	{
+	public readInt(): number {
 		this.assertRemainingBytes(4, 'readInt');
 
 		const byte1 = this._view[this._position];
@@ -257,8 +242,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadUInt32` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint32?view=netframework-4.7.2)
 	 */
-	public readUnsignedInt(): number
-	{
+	public readUnsignedInt(): number {
 		this.assertRemainingBytes(4, 'readUnsignedInt');
 
 		const byte1 = this._view[this._position];
@@ -289,8 +273,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint64?view=netframework-4.7.2)
 	 */
-	public readLongString(): string
-	{
+	public readLongString(): string {
 		this.assertRemainingBytes(8, 'readLongString');
 
 		const byte1 = this._view[this._position];
@@ -326,8 +309,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint64?view=netframework-4.7.2)
 	 */
-	public readLong(): number
-	{
+	public readLong(): number {
 		this.assertRemainingBytes(8, 'readLong');
 
 		return parseInt(this.readLongString());
@@ -341,8 +323,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadUInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint64?view=netframework-4.7.2)
 	 */
-	public readUnsignedLongString(): string
-	{
+	public readUnsignedLongString(): string {
 		this.assertRemainingBytes(8, 'readUnsignedLongString');
 
 		const byte1 = this._view[this._position];
@@ -376,8 +357,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadUInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint64?view=netframework-4.7.2)
 	 */
-	public readUnsignedLong(): number
-	{
+	public readUnsignedLong(): number {
 		this.assertRemainingBytes(8, 'readUnsignedLong');
 
 		return parseInt(this.readUnsignedLongString());
@@ -390,8 +370,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadSingle` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readsingle?view=netframework-4.7.2)
 	 */
-	public readFloat(): number
-	{
+	public readFloat(): number {
 		this.assertRemainingBytes(4, 'readFloat');
 
 		const floatArray = this.internalPosition % 4 === 0
@@ -410,8 +389,7 @@ export class BinaryReader
 	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadDouble` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readdouble?view=netframework-4.7.2)
 	 */
-	public readDouble(): number
-	{
+	public readDouble(): number {
 		this.assertRemainingBytes(8, 'readDouble');
 
 		const doubleArray = this.internalPosition % 8 === 0
@@ -433,8 +411,7 @@ export class BinaryReader
 	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 * @link [C# `BinaryReader.ReadDouble` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readdouble?view=netframework-4.7.2)
 	 */
-	public readChar(encoding: Encoding): string
-	{
+	public readChar(encoding: Encoding): string {
 		if (!isValidEncoding(encoding)) {
 			throw new EncodingError(EncodingMessageFactory.unknownEncoding(encoding));
 		}
@@ -461,8 +438,7 @@ export class BinaryReader
 	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 * @link [C# `BinaryReader.ReadChars` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readchars?view=netframework-4.7.2)
 	 */
-	public readChars(charactersToRead: number, encoding: Encoding): string
-	{
+	public readChars(charactersToRead: number, encoding: Encoding): string {
 		if (isNaN(charactersToRead)) {
 			throw new InvalidArgumentError('`charactersToRead` is not a number', 'charactersToRead', charactersToRead);
 		}
@@ -499,8 +475,7 @@ export class BinaryReader
 	 * character sequence in multibyte character encodings. Position of the stream does not change if this exception is thrown.
 	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 */
-	public readCharBytes(bytesToRead: number, encoding: Encoding): string
-	{
+	public readCharBytes(bytesToRead: number, encoding: Encoding): string {
 		if (isNaN(bytesToRead)) {
 			throw new InvalidArgumentError('`charactersToRead` is not a number', 'bytesToRead', bytesToRead);
 		}
@@ -536,8 +511,7 @@ export class BinaryReader
 	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 * @link [C# `BinaryReader.ReadString` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readstring?view=netframework-4.7.2)
 	 */
-	public readString(encoding: Encoding): string
-	{
+	public readString(encoding: Encoding): string {
 		if (!isValidEncoding(encoding)) {
 			throw new EncodingError(EncodingMessageFactory.unknownEncoding(encoding));
 		}
@@ -560,8 +534,7 @@ export class BinaryReader
 		return data.readString;
 	}
 
-	private assertRemainingBytes(bytesExpected: number, operationName: string): void
-	{
+	private assertRemainingBytes(bytesExpected: number, operationName: string): void {
 		const bytesRemaining = this.remainingBytes;
 
 		if (bytesRemaining < bytesExpected) {

@@ -1,10 +1,9 @@
 import * as fs from 'fs';
-import {expect} from 'chai';
-import {BinaryWriter} from "../src";
-import {bufferToHex, buildTestsFilesIndex, FixturesDirectory, WriterTestCallbackDictionaryDictionary} from "./fixtureCommon";
+import { expect } from 'chai';
+import { BinaryWriter } from "../src";
+import { bufferToHex, buildTestsFilesIndex, FixturesDirectory, WriterTestCallbackDictionaryDictionary } from "./fixtureCommon";
 
-function buildTestExecutors(): WriterTestCallbackDictionaryDictionary
-{
+function buildTestExecutors(): WriterTestCallbackDictionaryDictionary {
 	return {
 		bool: {
 			'false': writer => writer.writeBoolean(false),
@@ -128,26 +127,21 @@ function buildTestExecutors(): WriterTestCallbackDictionaryDictionary
 	};
 }
 
-describe("BinaryWriter, number fixture tests", () =>
-{
+describe("BinaryWriter, number fixture tests", () => {
 	const testFileIndex = buildTestsFilesIndex("test.common");
 	const testExecutors = buildTestExecutors();
 
-	Object.entries(testFileIndex).forEach(entry =>
-	{
+	Object.entries(testFileIndex).forEach(entry => {
 		const type = entry[0];
 		const tests = entry[1];
 
-		describe(type, () =>
-		{
+		describe(type, () => {
 
-			Object.entries(tests).forEach(test =>
-			{
+			Object.entries(tests).forEach(test => {
 				const testName = test[0];
 				const testPath = test[1];
 
-				it(`${testName} - ${testPath}`, () =>
-				{
+				it(`${testName} - ${testPath}`, () => {
 					expect(testExecutors).to.have.any.keys(type);
 					expect(testExecutors[type]).to.have.any.keys(testName);
 

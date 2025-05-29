@@ -1,54 +1,46 @@
 import * as fs from "fs";
-import {BinaryReader} from "../src";
-import {BinaryWriter} from "../src/BinaryWriter";
+import { BinaryReader } from "../src";
+import { BinaryWriter } from "../src/BinaryWriter";
 
 export const FixturesDirectory = __dirname + "/fixtures";
 
 
 type ReaderTestCallback = (data: BinaryReader) => void;
 
-interface ReaderTestCallbackDictionary
-{
+interface ReaderTestCallbackDictionary {
 	[index: string]: ReaderTestCallback;
 }
 
-export interface ReaderTestCallbackDictionaryDictionary
-{
+export interface ReaderTestCallbackDictionaryDictionary {
 	[index: string]: ReaderTestCallbackDictionary;
 }
 
-export interface ReaderStreamTypesDictionary
-{
+export interface ReaderStreamTypesDictionary {
 	[index: string]: ((buffer: Buffer) => BinaryReader);
 }
 
 
-export type WriterTestCallback = (data: BinaryWriter) => void|IterableIterator<void>;
+export type WriterTestCallback = (data: BinaryWriter) => void | IterableIterator<void>;
 
-export interface WriterTestCallbackDictionary
-{
+export interface WriterTestCallbackDictionary {
 	[index: string]: WriterTestCallback;
 }
 
-export interface WriterTestCallbackDictionaryDictionary
-{
+export interface WriterTestCallbackDictionaryDictionary {
 	[index: string]: WriterTestCallbackDictionary;
 }
 
 
-interface TestFileDictionary
-{
+interface TestFileDictionary {
 	[index: string]: string;
 }
 
-interface TestFileDictionaryDictionary
-{
+interface TestFileDictionaryDictionary {
 	[index: string]: TestFileDictionary;
 }
 
 
-export function bufferToHex(buffer: Buffer | number[]): string
-{
+export function bufferToHex(buffer: Buffer | number[]): string {
 	if (buffer instanceof Buffer) {
 		buffer = Array.from(new Uint8Array(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength)));
 	}
@@ -56,12 +48,10 @@ export function bufferToHex(buffer: Buffer | number[]): string
 	return buffer.map(x => x.toString(16).padStart(2, "0")).join(" ");
 }
 
-export function buildTestsFilesIndex(expectedPrefix: string): TestFileDictionaryDictionary
-{
+export function buildTestsFilesIndex(expectedPrefix: string): TestFileDictionaryDictionary {
 	const tests: TestFileDictionaryDictionary = {};
 
-	fs.readdirSync(FixturesDirectory).forEach(file =>
-	{
+	fs.readdirSync(FixturesDirectory).forEach(file => {
 		if (file.indexOf(expectedPrefix) !== 0) {
 			return;
 		}
@@ -85,8 +75,7 @@ export function buildTestsFilesIndex(expectedPrefix: string): TestFileDictionary
 }
 
 
-export function getTestStrings(): [string, string, string]
-{
+export function getTestStrings(): [string, string, string] {
 	const encodedString = ""
 		+ "%E2%8A%86%E2%84%95%E2%82%80%E2%84%9A%E2%84%9D" // "scienceCharacters" = "⊆ℕ₀ℚℝ"
 		+ "%C9%94%C9%9B%C9%99" // "IPA" = "ɔɛə"
