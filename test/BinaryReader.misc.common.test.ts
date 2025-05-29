@@ -1,8 +1,29 @@
 import { expect } from 'chai';
 import { BinaryReader } from "../src";
 import { getBufferOfLength } from "./common";
+import { Endianness } from '../src/Endianess';
 
 describe("BinaryReader, common tests", () => {
+	it('constructor(Uint8Array) - endianness', () => {
+		const readerDefault = new BinaryReader(new Uint8Array([]));
+		const readerBig = new BinaryReader(new Uint8Array([]), Endianness.Big);
+		const readerLittle = new BinaryReader(new Uint8Array([]), Endianness.Little);
+
+		expect(readerDefault.endianness).to.equal(Endianness.Little);
+		expect(readerBig.endianness).to.equal(Endianness.Big);
+		expect(readerLittle.endianness).to.equal(Endianness.Little);
+	});
+
+	it('constructor(ArrayBuffer) - endianness', () => {
+		const readerDefault = new BinaryReader(new ArrayBuffer());
+		const readerBig = new BinaryReader(new ArrayBuffer(), Endianness.Big);
+		const readerLittle = new BinaryReader(new ArrayBuffer(), Endianness.Little);
+
+		expect(readerDefault.endianness).to.equal(Endianness.Little);
+		expect(readerBig.endianness).to.equal(Endianness.Big);
+		expect(readerLittle.endianness).to.equal(Endianness.Little);
+	});
+
 	describe("get length", () => {
 		[0, 7, 32, 1024, 256 * 256].forEach(length => {
 			it(`Should return expected buffer length (length=${length}`, () => {

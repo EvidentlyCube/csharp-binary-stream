@@ -6,6 +6,7 @@ import * as Int7 from './Int7';
 import { EncodingMessageFactory, EndOfStreamMessageFactory } from "./errors/ErrorMessageFactory";
 import { EncodingError } from "./errors/EncodingError";
 import { InvalidArgumentError } from "./errors/InvalidArgumentError";
+import { Endianness } from "./Endianess";
 
 /**
  * A binary stream reader compatible with majority of methods in C#'s [BinaryReader](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader?view=netframework-4.7.2).
@@ -20,6 +21,11 @@ export class BinaryReader {
 
 	private _bufferStart: number;
 	private _bufferLength: number;
+
+	/**
+	 * Endianness of all the read operations
+	 */
+	public endianness: Endianness;
 
 	/**
 	 * Length of the stream, in bytes loaded, into the reader.
@@ -66,20 +72,30 @@ export class BinaryReader {
 	 * Creates a new reader powered by an ArrayBuffer.
 	 *
 	 * @remark
-	 * There is a danger when accessing a `TypedArray`'s [`buffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/buffer) property, because the `TypeArray` is just a view into the `ArrayBuffer` that can have different offset and length.
+	 * There is a danger when accessing a `TypedArray`'s
+	 * [`buffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/buffer)
+	 * property, because the `TypeArray` is just a view into the `ArrayBuffer`
+	 * that can have different offset and length.
 	 *
-	 * For example, imagine a buffer `00 01 02 03 04 05`. `const arr = new Uint8Array(buffer, 1, 2)` will only have access to `01 02`, but it is still powered by the same,
-	 * 6-byte buffer, and doing `new BinaryReader(arr.buffer)` will also refer to the longer buffer.
+	 * For example, imagine a buffer `00 01 02 03 04 05`.
+	 * `const arr = new Uint8Array(buffer, 1, 2)` will only have access to `01 02`,
+	 * but it is still powered by the same, 6-byte buffer, and doing
+	 * `new BinaryReader(arr.buffer)` will also refer to the longer buffer.
 	 *
 	 * There are three solutions:
 	 *
 	 *  1. If you have access to `Uint8Array`, simply use that.
-	 *  2. Create a new `Uint8Array` from a differently typed array: `new Uint8Array(other.buffer, other.byteOffset, other.byteLength);`
-	 *  3. Create a new `ArrayBuffer` using slice: `arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength);`
+	 *  2. Create a new `Uint8Array` from a differently typed array:
+	 * 	`new Uint8Array(other.buffer, other.byteOffset, other.byteLength);`
+	 *  3. Create a new `ArrayBuffer` using slice:
+	 * `arr.buffer.slice(arr.byteOffset, arr.byteOffset + arr.byteLength);`
 	 *
 	 * @param {ArrayBuffer|Uint8Array} stream Stream from which to read the data.
+	 * @param {Endianness | undefined} endianness Defaults to Little Endian.
 	 */
-	public constructor(stream: ArrayBuffer | Uint8Array) {
+	public constructor(stream: ArrayBuffer | Uint8Array, endianness: Endianness = Endianness.Little) {
+		this.endianness
+
 		if (stream instanceof ArrayBuffer) {
 			this._stream = stream;
 			this._view = new Uint8Array(stream);
@@ -94,6 +110,8 @@ export class BinaryReader {
 		} else {
 			throw new InvalidArgumentError("Stream is neither instance of ArrayBuffer nor Uint8Array.", 'stream', stream);
 		}
+
+		this.endianness = endianness;
 
 		this._position = 0;
 	}

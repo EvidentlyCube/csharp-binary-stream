@@ -6,6 +6,7 @@ import { EncodingMessageFactory, OutOfBoundsMessageFactory } from "./errors/Erro
 import { InvalidArgumentError } from "./errors/InvalidArgumentError";
 import { Numbers } from "./Numbers";
 import { EncodingError } from "./errors/EncodingError";
+import { Endianness, isValidEndianness } from './Endianess';
 
 /**
  * @ignore
@@ -39,6 +40,11 @@ export class BinaryWriter {
 	private _position: number;
 
 	/**
+	 * Endianness of all the write operations
+	 */
+	public endianness: Endianness;
+
+	/**
 	 * Length of the written data in bytes
 	 */
 	public get length(): number {
@@ -53,7 +59,8 @@ export class BinaryWriter {
 	}
 
 	/**
-	 * Changes the position inside the buffer at which the next write operation will happen. Setting it to less than `0` will clamp it to `0`, and setting it
+	 * Changes the position inside the buffer at which the next write operation
+	 * will happen. Setting it to less than `0` will clamp it to `0`, and setting it
 	 * to anything more than `length` will clamp it to `length`.
 	 */
 	public set position(value: number) {
@@ -62,8 +69,10 @@ export class BinaryWriter {
 
 	/**
 	 * Creates a new `BinaryWriter` with empty writing buffer.
+	 *
+	 * @param {Endianness | undefined} endianness Defaults to Little Endian.
 	 */
-	public constructor();
+	public constructor(endianness?: Endianness);
 
 	/**
 	 * Creates a new `BinaryWriter` and fills its buffer with the specified array. Position is set to the end of the buffer, meaning
@@ -73,9 +82,10 @@ export class BinaryWriter {
 	 * There is no syncing between the buffer and the passed array, changes to either won't be reflected in the other.
 	 *
 	 * @param {number[]} array
+	 * @param {Endianness | undefined} endianness Defaults to Little Endian.
 	 * @throws [[OutOfBoundsError]] Thrown when any of the array elements provided is outside byte range
 	 */
-	public constructor(array: number[]);
+	public constructor(array: number[], endianness?: Endianness);
 
 	/**
 	 * Creates a new `BinaryWriter` and fills its buffer with the contents of the array. Position is set to the end of the buffer, meaning
@@ -85,11 +95,21 @@ export class BinaryWriter {
 	 * There is no syncing between the buffer and the passed array, changes to either won't be reflected in the other.
 	 *
 	 * @param {Uint8Array} array
+	 * @param {Endianness | undefined} endianness Defaults to Little Endian.
 	 */
-	public constructor(array: Uint8Array);
+	public constructor(array: Uint8Array, endianness?: Endianness);
 
-	public constructor(arg1: number[] | Uint8Array | undefined = undefined) {
+	public constructor(arg1?: number[] | Uint8Array | Endianness, arg2?: Endianness) {
 		this._position = 0;
+
+		const endiannessArg = arg2 ?? arg1;
+
+		if (endiannessArg !== undefined && typeof endiannessArg === 'number' && isValidEndianness(endiannessArg)) {
+			this.endianness = endiannessArg;
+		} else {
+			this.endianness = Endianness.Little;
+		}
+
 
 		if (Array.isArray(arg1)) {
 			this._buffer = new Array(arg1.length);
@@ -99,6 +119,7 @@ export class BinaryWriter {
 		} else if (arg1 instanceof Uint8Array) {
 			this._buffer = Array.from(arg1);
 			this._length = this._buffer.length;
+
 		} else {
 			this._buffer = [];
 			this._length = 0;
