@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { BinaryReader } from "../src";
 import { getBufferOfLength } from "./common";
-import { Endianness } from '../src/Endianess';
+import { Endianness } from '../src/Endianness';
 
 describe("BinaryReader, common tests", () => {
 	it('constructor(Uint8Array) - endianness', () => {

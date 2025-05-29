@@ -6,7 +6,7 @@ import { EncodingMessageFactory, OutOfBoundsMessageFactory } from "./errors/Erro
 import { InvalidArgumentError } from "./errors/InvalidArgumentError";
 import { Numbers } from "./Numbers";
 import { EncodingError } from "./errors/EncodingError";
-import { Endianness, isValidEndianness } from './Endianess';
+import { Endianness, isValidEndianness } from './Endianness';
 
 /**
  * @ignore
@@ -75,11 +75,13 @@ export class BinaryWriter {
 	public constructor(endianness?: Endianness);
 
 	/**
-	 * Creates a new `BinaryWriter` and fills its buffer with the specified array. Position is set to the end of the buffer, meaning
+	 * Creates a new `BinaryWriter` and fills its buffer with the specified
+	 * array. Position is set to the end of the buffer, meaning
 	 * any subsequent writes will append new data at the end.
 	 *
 	 * @remarks
-	 * There is no syncing between the buffer and the passed array, changes to either won't be reflected in the other.
+	 * There is no syncing between the buffer and the passed array, changes to
+	 * either won't be reflected in the other.
 	 *
 	 * @param {number[]} array
 	 * @param {Endianness | undefined} endianness Defaults to Little Endian.
@@ -88,11 +90,13 @@ export class BinaryWriter {
 	public constructor(array: number[], endianness?: Endianness);
 
 	/**
-	 * Creates a new `BinaryWriter` and fills its buffer with the contents of the array. Position is set to the end of the buffer, meaning
+	 * Creates a new `BinaryWriter` and fills its buffer with the contents of
+	 * the array. Position is set to the end of the buffer, meaning
 	 * any subsequent writes will append new data at the end.
 	 *
 	 * @remarks
-	 * There is no syncing between the buffer and the passed array, changes to either won't be reflected in the other.
+	 * There is no syncing between the buffer and the passed array, changes to
+	 * either won't be reflected in the other.
 	 *
 	 * @param {Uint8Array} array
 	 * @param {Endianness | undefined} endianness Defaults to Little Endian.
@@ -127,7 +131,8 @@ export class BinaryWriter {
 	}
 
 	/**
-	 * Writes one byte, `0x01` for `true` and `0x00` for `false` and advances the position by one byte.
+	 * Writes one byte, `0x01` for `true` and `0x00` for `false` and advances
+	 * the position by one byte.
 	 * @param {boolean} value Boolean to write.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Boolean_)
 	 */
@@ -140,7 +145,8 @@ export class BinaryWriter {
 	/**
 	 * Writes one byte and advances the position by one byte.
 	 * @param {number} value Byte to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0, more than 255, +/- infinity or `NaN`.
+	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0, more
+	 * than 255, +/- infinity or `NaN`.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Byte_)
 	 */
 	public writeByte(value: number): void {
@@ -174,7 +180,8 @@ export class BinaryWriter {
 	/**
 	 * Writes the passed array of bytes and advances the position by `bytes`'s length.
 	 * @param {number[]} bytes Bytes to write.
-	 * @throws [[OutOfBoundsError]] Thrown when any of the bytes in `bytes` is less than 0, more than 255, +/- infinity or `NaN`.
+	 * @throws [[OutOfBoundsError]] Thrown when any of the bytes in `bytes` is less
+	 * than 0, more than 255, +/- infinity or `NaN`.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Byte___)
 	 */
 	public writeBytes(bytes: number[]): void {
@@ -191,7 +198,8 @@ export class BinaryWriter {
 	/**
 	 * Writes a `signed byte` and advances the position by one byte.
 	 * @param {number} value Signed byte to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than -128, more than 127, +/- infinity or `NaN`.
+	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than -128, more
+	 * than 127, +/- infinity or `NaN`.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_SByte_)
 	 */
 	public writeSignedByte(value: number): void {
@@ -205,14 +213,20 @@ export class BinaryWriter {
 	/**
 	 * Writes a `short` and advances the position by two bytes.
 	 * @param {number} value Short to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than -32,768 more than 32,767, +/- infinity or `NaN`.
+	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than -32,768
+	 * more than 32,767, +/- infinity or `NaN`.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Int16_)
 	 */
 	public writeShort(value: number): void {
 		assertNumberSize('short', Numbers.SHORT.MIN, Numbers.SHORT.MAX, value);
 
-		this._buffer[this._position++] = value & 0xFF;
-		this._buffer[this._position++] = (value >> 8 & 0xFF);
+		if (this.endianness === Endianness.Little) {
+			this._buffer[this._position++] = value & 0xFF;
+			this._buffer[this._position++] = (value >> 8 & 0xFF);
+		} else {
+			this._buffer[this._position++] = (value >> 8 & 0xFF);
+			this._buffer[this._position++] = value & 0xFF;
+		}
 
 		this._length = Math.max(this._length, this._position);
 	}
@@ -220,14 +234,20 @@ export class BinaryWriter {
 	/**
 	 * Writes an `unsigned short` and advances the position by two bytes.
 	 * @param {number} value Unsigned short to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0 more than 65,535, +/- infinity or `NaN`.
+	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0 more than
+	 * 65,535, +/- infinity or `NaN`.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_UInt16_)
 	 */
 	public writeUnsignedShort(value: number): void {
 		assertNumberSize('unsigned short', Numbers.USHORT.MIN, Numbers.USHORT.MAX, value);
 
-		this._buffer[this._position++] = value & 0xFF;
-		this._buffer[this._position++] = (value >> 8 & 0xFF);
+		if (this.endianness === Endianness.Little) {
+			this._buffer[this._position++] = value & 0xFF;
+			this._buffer[this._position++] = (value >> 8 & 0xFF);
+		} else {
+			this._buffer[this._position++] = (value >> 8 & 0xFF);
+			this._buffer[this._position++] = value & 0xFF;
+		}
 
 		this._length = Math.max(this._length, this._position);
 	}
@@ -235,16 +255,24 @@ export class BinaryWriter {
 	/**
 	 * Writes an `int` and advances the position by four bytes.
 	 * @param {number} value Int to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than -2,147,483,648 more than 2,147,483,647, +/- infinity or `NaN`.
+	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than
+	 * -2,147,483,648 more than 2,147,483,647, +/- infinity or `NaN`.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Int32_)
 	 */
 	public writeInt(value: number): void {
 		assertNumberSize('int', Numbers.INT.MIN, Numbers.INT.MAX, value);
 
-		this._buffer[this._position++] = value & 0xFF;
-		this._buffer[this._position++] = (value >> 8 & 0xFF);
-		this._buffer[this._position++] = (value >> 16 & 0xFF);
-		this._buffer[this._position++] = (value >> 24 & 0xFF);
+		if (this.endianness === Endianness.Little) {
+			this._buffer[this._position++] = value & 0xFF;
+			this._buffer[this._position++] = (value >> 8 & 0xFF);
+			this._buffer[this._position++] = (value >> 16 & 0xFF);
+			this._buffer[this._position++] = (value >> 24 & 0xFF);
+		} else {
+			this._buffer[this._position++] = (value >> 24 & 0xFF);
+			this._buffer[this._position++] = (value >> 16 & 0xFF);
+			this._buffer[this._position++] = (value >> 8 & 0xFF);
+			this._buffer[this._position++] = value & 0xFF;
+		}
 
 		this._length = Math.max(this._length, this._position);
 	}
@@ -252,16 +280,24 @@ export class BinaryWriter {
 	/**
 	 * Writes an `unsigned int` and advances the position by four bytes.
 	 * @param {number} value Unsigned int to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0 more than 4,294,967,295 +/- infinity or `NaN`.
+	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0 more than
+	 * 4,294,967,295 +/- infinity or `NaN`.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_UInt32_)
 	 */
 	public writeUnsignedInt(value: number): void {
 		assertNumberSize('unsigned int', Numbers.UINT.MIN, Numbers.UINT.MAX, value);
 
-		this._buffer[this._position++] = value & 0xFF;
-		this._buffer[this._position++] = (value >> 8 & 0xFF);
-		this._buffer[this._position++] = (value >> 16 & 0xFF);
-		this._buffer[this._position++] = (value >> 24 & 0xFF);
+		if (this.endianness === Endianness.Little) {
+			this._buffer[this._position++] = value & 0xFF;
+			this._buffer[this._position++] = (value >> 8 & 0xFF);
+			this._buffer[this._position++] = (value >> 16 & 0xFF);
+			this._buffer[this._position++] = (value >> 24 & 0xFF);
+		} else {
+			this._buffer[this._position++] = (value >> 24 & 0xFF);
+			this._buffer[this._position++] = (value >> 16 & 0xFF);
+			this._buffer[this._position++] = (value >> 8 & 0xFF);
+			this._buffer[this._position++] = value & 0xFF;
+		}
 
 		this._length = Math.max(this._length, this._position);
 	}
@@ -270,15 +306,22 @@ export class BinaryWriter {
 	 * Writes a `long` and advances the position by eight bytes.
 	 *
 	 * @remarks
-	 * JavaScript internally uses `double` to represent all numbers. The smallest and largest number that can be represented without loss of precision are,
-	 * respectively, −9,007,199,254,740,991 `−(2^53 − 1)` and 9,007,199,254,740,991 `2^53 − 1`, while `long` can hold values between `-2^63` and `2^63 - 1`, while
-	 * `unsigned long` goes all the way up to `2^64-1`.
+	 * JavaScript internally uses `double` to represent all numbers.
+	 * The smallest and largest number that can be represented without loss of
+	 * precision are, respectively, −9,007,199,254,740,991 `−(2^53 − 1)` and
+	 * 9,007,199,254,740,991 `2^53 − 1`, while `long` can hold values between
+	 * `-2^63` and `2^63 - 1`, while `unsigned long`
+	 * goes all the way up to `2^64-1`.
 	 *
-	 * What happens when you go beyond those limits is that some numbers just cannot be expressed. `9007199254740992+1` is the same as `9007199254740992+1+1+1+1`
-	 * and if you try to set a variable to `9007199254740993` it just gets rounded down.
+	 * What happens when you go beyond those limits is that some numbers just
+	 * cannot be expressed. `9007199254740992+1` is the same as
+	 * `9007199254740992+1+1+1+1` and if you try to set a variable to
+	 * `9007199254740993` it just gets rounded down.
 	 *
-	 * @param {number|string} value Long to write accepted both as a string (for 100% precision in very low/high numbers) and number, when precision is not a
-	 * requirement.
+	 * @param {number|string} value Long to write accepted both as a string
+	 * (for 100% precision in very low/high numbers) and number,
+	 * when precision is not a requirement.
+	 *
 	 * @throws [[InvalidArgumentError]] Thrown when `value` is `NaN` or +/- infinite.
 	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than -9,223,372,036,854,775,808 more than 9,223,372,036,854,775,807 +/- infinity or `NaN`.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Int64_)
@@ -297,15 +340,28 @@ export class BinaryWriter {
 		const leftHalf = bigint.and(0xFFFFFFFF).toJSNumber();
 		const rightHalf = bigint.shiftRight(32).and(0xFFFFFFFF).toJSNumber();
 
-		this._buffer[this._position++] = leftHalf & 0xFF;
-		this._buffer[this._position++] = (leftHalf >> 8 & 0xFF);
-		this._buffer[this._position++] = (leftHalf >> 16 & 0xFF);
-		this._buffer[this._position++] = (leftHalf >> 24 & 0xFF);
+		if (this.endianness === Endianness.Little) {
+			this._buffer[this._position++] = leftHalf & 0xFF;
+			this._buffer[this._position++] = (leftHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = (leftHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (leftHalf >> 24 & 0xFF);
 
-		this._buffer[this._position++] = rightHalf & 0xFF;
-		this._buffer[this._position++] = (rightHalf >> 8 & 0xFF);
-		this._buffer[this._position++] = (rightHalf >> 16 & 0xFF);
-		this._buffer[this._position++] = (rightHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = rightHalf & 0xFF;
+			this._buffer[this._position++] = (rightHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = (rightHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (rightHalf >> 24 & 0xFF);
+
+		} else {
+			this._buffer[this._position++] = (rightHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = (rightHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (rightHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = rightHalf & 0xFF;
+
+			this._buffer[this._position++] = (leftHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = (leftHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (leftHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = leftHalf & 0xFF;
+		}
 
 		this._length = Math.max(this._length, this._position);
 	}
@@ -333,15 +389,27 @@ export class BinaryWriter {
 		const leftHalf = bigint.and(0xFFFFFFFF).toJSNumber();
 		const rightHalf = bigint.shiftRight(32).and(0xFFFFFFFF).toJSNumber();
 
-		this._buffer[this._position++] = leftHalf & 0xFF;
-		this._buffer[this._position++] = (leftHalf >> 8 & 0xFF);
-		this._buffer[this._position++] = (leftHalf >> 16 & 0xFF);
-		this._buffer[this._position++] = (leftHalf >> 24 & 0xFF);
+		if (this.endianness === Endianness.Little) {
+			this._buffer[this._position++] = leftHalf & 0xFF;
+			this._buffer[this._position++] = (leftHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = (leftHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (leftHalf >> 24 & 0xFF);
 
-		this._buffer[this._position++] = rightHalf & 0xFF;
-		this._buffer[this._position++] = (rightHalf >> 8 & 0xFF);
-		this._buffer[this._position++] = (rightHalf >> 16 & 0xFF);
-		this._buffer[this._position++] = (rightHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = rightHalf & 0xFF;
+			this._buffer[this._position++] = (rightHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = (rightHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (rightHalf >> 24 & 0xFF);
+		} else {
+			this._buffer[this._position++] = (rightHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = (rightHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (rightHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = rightHalf & 0xFF;
+
+			this._buffer[this._position++] = (leftHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = (leftHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (leftHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = leftHalf & 0xFF;
+		}
 
 		this._length = Math.max(this._length, this._position);
 	}
@@ -358,19 +426,36 @@ export class BinaryWriter {
 		}
 
 		if (Number.isNaN(value)) {
-			this._buffer[this._position++] = 0x00;
-			this._buffer[this._position++] = 0x00;
-			this._buffer[this._position++] = 0xc0;
-			this._buffer[this._position++] = 0xff;
+			if (this.endianness === Endianness.Little) {
+				this._buffer[this._position++] = 0x00;
+				this._buffer[this._position++] = 0x00;
+				this._buffer[this._position++] = 0xc0;
+				this._buffer[this._position++] = 0xff;
+			} else {
+				this._buffer[this._position++] = 0xff;
+				this._buffer[this._position++] = 0xc0;
+				this._buffer[this._position++] = 0x00;
+				this._buffer[this._position++] = 0x00;
+			}
 
 		} else {
+			// @FIXME Float32Array uses CPU's endianness which makes this function not fully cross-platform
+			// Right now the assumption is `Float32Array` is Little Endian and that needs to be addressed in the future
+
 			const floatBuffer = new Float32Array([value]);
 			const uintBuffer = new Uint8Array(floatBuffer.buffer, floatBuffer.byteOffset, 4);
 
-			this._buffer[this._position++] = uintBuffer[0];
-			this._buffer[this._position++] = uintBuffer[1];
-			this._buffer[this._position++] = uintBuffer[2];
-			this._buffer[this._position++] = uintBuffer[3];
+			if (this.endianness === Endianness.Little) {
+				this._buffer[this._position++] = uintBuffer[0];
+				this._buffer[this._position++] = uintBuffer[1];
+				this._buffer[this._position++] = uintBuffer[2];
+				this._buffer[this._position++] = uintBuffer[3];
+			} else {
+				this._buffer[this._position++] = uintBuffer[3];
+				this._buffer[this._position++] = uintBuffer[2];
+				this._buffer[this._position++] = uintBuffer[1];
+				this._buffer[this._position++] = uintBuffer[0];
+			}
 		}
 
 		this._length = Math.max(this._length, this._position);
@@ -392,6 +477,9 @@ export class BinaryWriter {
 			this._buffer[this._position++] = 0xf8;
 			this._buffer[this._position++] = 0xff;
 		} else {
+			// @FIXME Float64Array uses CPU's endianness which makes this function not fully cross-platform
+			// Right now the assumption is `Float32Array` is Little Endian and that needs to be addressed in the future
+
 			const floatBuffer = new Float64Array([value]);
 			const uintBuffer = new Uint8Array(floatBuffer.buffer, floatBuffer.byteOffset, 8);
 

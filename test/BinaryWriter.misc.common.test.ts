@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { BinaryWriter } from "../src";
 import { OutOfBoundsError } from "../src/errors/OutOfBoundsError";
-import { Endianness } from '../src/Endianess';
+import { Endianness } from '../src/Endianness';
 
 describe("BinaryWriter, common misc tests", () => {
 	describe("get position", () => {

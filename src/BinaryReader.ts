@@ -6,7 +6,7 @@ import * as Int7 from './Int7';
 import { EncodingMessageFactory, EndOfStreamMessageFactory } from "./errors/ErrorMessageFactory";
 import { EncodingError } from "./errors/EncodingError";
 import { InvalidArgumentError } from "./errors/InvalidArgumentError";
-import { Endianness } from "./Endianess";
+import { Endianness } from "./Endianness";
 
 /**
  * A binary stream reader compatible with majority of methods in C#'s [BinaryReader](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader?view=netframework-4.7.2).
@@ -203,7 +203,9 @@ export class BinaryReader {
 		const byte2 = this._view[this._position + 1];
 		this._position += 2;
 
-		const short = byte2 * 256 + byte1;
+		const short = this.endianness === Endianness.Little
+			? byte2 * 256 + byte1
+			: byte1 * 256 + byte2;
 
 		return short < 32768
 			? short
@@ -224,7 +226,9 @@ export class BinaryReader {
 		const byte2 = this._view[this._position + 1];
 		this._position += 2;
 
-		return byte2 * 256 + byte1;
+		return this.endianness === Endianness.Little
+			? byte2 * 256 + byte1
+			: byte1 * 256 + byte2
 	}
 
 	/**
@@ -243,10 +247,15 @@ export class BinaryReader {
 		const byte4 = this._view[this._position + 3];
 		this._position += 4;
 
-		const int = byte4 * 256 * 256 * 256
-			+ byte3 * 256 * 256
-			+ byte2 * 256
-			+ byte1;
+		const int = this.endianness === Endianness.Little
+			? byte4 * 256 * 256 * 256
+				+ byte3 * 256 * 256
+				+ byte2 * 256
+				+ byte1
+			: byte1 * 256 * 256 * 256
+				+ byte2 * 256 * 256
+				+ byte3 * 256
+				+ byte4;
 
 		return int < 2147483648
 			? int
@@ -269,10 +278,15 @@ export class BinaryReader {
 		const byte4 = this._view[this._position + 3];
 		this._position += 4;
 
-		return byte4 * 256 * 256 * 256
-			+ byte3 * 256 * 256
-			+ byte2 * 256
-			+ byte1;
+		return this.endianness === Endianness.Little
+			? byte4 * 256 * 256 * 256
+				+ byte3 * 256 * 256
+				+ byte2 * 256
+				+ byte1
+			: byte1 * 256 * 256 * 256
+				+ byte2 * 256 * 256
+				+ byte3 * 256
+				+ byte4;
 	}
 
 	/**
@@ -312,14 +326,23 @@ export class BinaryReader {
 		this._position += 8;
 
 		const m256 = bigInt(256);
-		const long = bigInt(byte1)
-			.add(bigInt(byte2).multiply(m256))
-			.add(bigInt(byte3).multiply(m256.pow(2)))
-			.add(bigInt(byte4).multiply(m256.pow(3)))
-			.add(bigInt(byte5).multiply(m256.pow(4)))
-			.add(bigInt(byte6).multiply(m256.pow(5)))
-			.add(bigInt(byte7).multiply(m256.pow(6)))
-			.add(bigInt(byte8).multiply(m256.pow(7)));
+		const long = this.endianness === Endianness.Little
+			? bigInt(byte1)
+				.add(bigInt(byte2).multiply(m256))
+				.add(bigInt(byte3).multiply(m256.pow(2)))
+				.add(bigInt(byte4).multiply(m256.pow(3)))
+				.add(bigInt(byte5).multiply(m256.pow(4)))
+				.add(bigInt(byte6).multiply(m256.pow(5)))
+				.add(bigInt(byte7).multiply(m256.pow(6)))
+				.add(bigInt(byte8).multiply(m256.pow(7)))
+			:  bigInt(byte8)
+				.add(bigInt(byte7).multiply(m256))
+				.add(bigInt(byte6).multiply(m256.pow(2)))
+				.add(bigInt(byte5).multiply(m256.pow(3)))
+				.add(bigInt(byte4).multiply(m256.pow(4)))
+				.add(bigInt(byte3).multiply(m256.pow(5)))
+				.add(bigInt(byte2).multiply(m256.pow(6)))
+				.add(bigInt(byte1).multiply(m256.pow(7)))
 
 		return long.lesser("9223372036854775808")
 			? long.toString()
@@ -367,14 +390,23 @@ export class BinaryReader {
 		this._position += 8;
 
 		const m256 = bigInt(256);
-		const long = bigInt(byte1)
-			.add(bigInt(byte2).multiply(m256))
-			.add(bigInt(byte3).multiply(m256.pow(2)))
-			.add(bigInt(byte4).multiply(m256.pow(3)))
-			.add(bigInt(byte5).multiply(m256.pow(4)))
-			.add(bigInt(byte6).multiply(m256.pow(5)))
-			.add(bigInt(byte7).multiply(m256.pow(6)))
-			.add(bigInt(byte8).multiply(m256.pow(7)));
+		const long = this.endianness === Endianness.Little
+			? bigInt(byte1)
+				.add(bigInt(byte2).multiply(m256))
+				.add(bigInt(byte3).multiply(m256.pow(2)))
+				.add(bigInt(byte4).multiply(m256.pow(3)))
+				.add(bigInt(byte5).multiply(m256.pow(4)))
+				.add(bigInt(byte6).multiply(m256.pow(5)))
+				.add(bigInt(byte7).multiply(m256.pow(6)))
+				.add(bigInt(byte8).multiply(m256.pow(7)))
+			:  bigInt(byte8)
+				.add(bigInt(byte7).multiply(m256))
+				.add(bigInt(byte6).multiply(m256.pow(2)))
+				.add(bigInt(byte5).multiply(m256.pow(3)))
+				.add(bigInt(byte4).multiply(m256.pow(4)))
+				.add(bigInt(byte3).multiply(m256.pow(5)))
+				.add(bigInt(byte2).multiply(m256.pow(6)))
+				.add(bigInt(byte1).multiply(m256.pow(7)));
 
 		return long.toString();
 	}
@@ -403,10 +435,23 @@ export class BinaryReader {
 	public readFloat(): number {
 		this.assertRemainingBytes(4, 'readFloat');
 
-		const floatArray = this.internalPosition % 4 === 0
-			? new Float32Array(this._stream, this.internalPosition, 1)
-			: new Float32Array(this._stream.slice(this.internalPosition, this.internalPosition + 4), 0, 1);
+		// @FIXME Float32Array uses CPU's endianness which makes this function not fully cross-platform
+		// Right now the assumption is `Float32Array` is Little Endian and that needs to be addressed in the future
 
+		const byteArray = new Uint8Array(4);
+		if (this.endianness === Endianness.Little) {
+			byteArray[0] = this._view[this._position];
+			byteArray[1] = this._view[this._position + 1];
+			byteArray[2] = this._view[this._position + 2];
+			byteArray[3] = this._view[this._position + 3];
+		} else {
+			byteArray[3] = this._view[this._position];
+			byteArray[2] = this._view[this._position + 1];
+			byteArray[1] = this._view[this._position + 2];
+			byteArray[0] = this._view[this._position + 3];
+		}
+
+		const floatArray = new Float32Array(byteArray.buffer);
 		this._position += 4;
 
 		return floatArray[0];
@@ -422,10 +467,32 @@ export class BinaryReader {
 	public readDouble(): number {
 		this.assertRemainingBytes(8, 'readDouble');
 
-		const doubleArray = this.internalPosition % 8 === 0
-			? new Float64Array(this._stream, this.internalPosition, 1)
-			: new Float64Array(this._stream.slice(this.internalPosition, this.internalPosition + 8), 0, 1);
+		// @FIXME Float64Array uses CPU's endianness which makes this function not fully cross-platform
+		// Right now the assumption is `Float32Array` is Little Endian and that needs to be addressed in the future
 
+
+		const byteArray = new Uint8Array(8);
+		if (this.endianness === Endianness.Little) {
+			byteArray[0] = this._view[this._position];
+			byteArray[1] = this._view[this._position + 1];
+			byteArray[2] = this._view[this._position + 2];
+			byteArray[3] = this._view[this._position + 3];
+			byteArray[4] = this._view[this._position + 4];
+			byteArray[5] = this._view[this._position + 5];
+			byteArray[6] = this._view[this._position + 6];
+			byteArray[7] = this._view[this._position + 7];
+		} else {
+			byteArray[7] = this._view[this._position];
+			byteArray[6] = this._view[this._position + 1];
+			byteArray[5] = this._view[this._position + 2];
+			byteArray[4] = this._view[this._position + 3];
+			byteArray[3] = this._view[this._position + 4];
+			byteArray[2] = this._view[this._position + 5];
+			byteArray[1] = this._view[this._position + 6];
+			byteArray[0] = this._view[this._position + 7];
+		}
+
+		const doubleArray = new Float64Array(byteArray.buffer);
 		this._position += 8;
 
 		return doubleArray[0];

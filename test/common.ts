@@ -36,11 +36,20 @@ export function getArrayHex(hex: string): number[] {
 		throw new Error("Provided binary data should have length being multiply of 8.");
 	}
 
-	return hex.match(/.{2}/g).map(x => parseInt(x, 16));
+	const matches = hex.match(/.{2}/g);
+	if (!matches) {
+		throw new Error("Hex did not match");
+	}
+
+	return matches.map(x => parseInt(x, 16));
 }
 
 export function getBufferHex(hex: string): ArrayBuffer {
 	return getBufferArray(getArrayHex(hex));
+}
+
+export function arrayToHex(data: number[]): string {
+	return data.map(b => b.toString(16).padStart(2, '0')).join(' ').toUpperCase();
 }
 
 export function writeUtf8Character(array: number[], position: number, charLength: number): void {
