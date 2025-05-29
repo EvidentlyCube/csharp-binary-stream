@@ -1,6 +1,7 @@
 
 export enum Encoding {
-	Utf8 = 'utf8'
+	Utf8 = 'utf8',
+	Utf8d = 'utf-8',
 }
 
 /** @ignore*/

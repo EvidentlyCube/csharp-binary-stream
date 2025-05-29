@@ -388,15 +388,18 @@ export class BinaryWriter {
 	}
 
 	/**
-	 * Writes a single character in the specified encodng and advances the position by the number of bytes the character takes in that encoding.
+	 * Writes a single character in the specified encoding and advances the
+	 * position by the number of bytes the character takes in that encoding.
 	 *
-	 * @param {number|String} character Unicode codepoint of the character to write or a string, in which case only the first character is used.
+	 * @param {number|String} character Unicode codepoint of the character to
+	 * write or a string, in which case only the first character is used.
 	 * @param {Encoding} encoding Character encoding to use when writing the character.
-	 * @throws [[InvalidArgumentError]] Thrown when `null` is passed for `character` or when the codepoint passed in `character` is negative, +/- infinite or `NaN`
+	 * @throws [[InvalidArgumentError]] Thrown when `null` is passed for `character`
+	 * or when the codepoint passed in `character` is negative, +/- infinite or `NaN`
 	 * @throws [[EncodingError]] Thrown when unknown or unsupported `encoding` is passed.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Char_)
 	 */
-	public writeChar(character: number | string, encoding: Encoding): void {
+	public writeChar(character: number | string, encoding: Encoding = Encoding.Utf8): void {
 		if (character === null) {
 			throw new InvalidArgumentError('Cannot write null string.', 'value', character);
 		}
@@ -411,15 +414,18 @@ export class BinaryWriter {
 	}
 
 	/**
-	 * Writes multiple characters in the specified encodng and advances the position by the number of bytes the charactesr take in that encoding.
+	 * Writes multiple characters in the specified encoding and advances the
+	 * position by the number of bytes the characters take in that encoding.
 	 *
-	 * @param {number[]|String} characters Unicode codepoints of the character to write or a string.
+	 * @param {number[]|String} characters Unicode codepoints of the character
+	 * to write or a string.
 	 * @param {Encoding} encoding Character encoding to use when writing the characters.
-	 * @throws [[InvalidArgumentError]] Thrown when `null` is passed for `character` or when any of the codepoints passed in `characters` is negative, +/- infinite or `NaN`
+	 * @throws [[InvalidArgumentError]] Thrown when `null` is passed for `character`
+	 * or when any of the codepoints passed in `characters` is negative, +/- infinite or `NaN`
 	 * @throws [[EncodingError]] Thrown when unknown or unsupported `encoding` is passed.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Char___)
 	 */
-	public writeChars(characters: number[] | string, encoding: Encoding): void {
+	public writeChars(characters: number[] | string, encoding: Encoding = Encoding.Utf8): void {
 		if (characters === null) {
 			throw new InvalidArgumentError('Cannot write null string.', 'value', characters);
 		}
@@ -434,15 +440,17 @@ export class BinaryWriter {
 	}
 
 	/**
-	 * Writes length-prefixed multiple characters in the specified encodng and advances the position by the number of bytes the charactesr take in that encoding.
+	 * Writes length-prefixed multiple characters in the specified encoding and
+	 * advances the position by the number of bytes the characters take in that encoding.
 	 *
 	 * @param {number[]|String} value Unicode codepoints of the character to write or a string.
 	 * @param {Encoding} encoding Character encoding to use when writing the characters.
-	 * @throws [[InvalidArgumentError]] Thrown when `null` is passed for `character` or when any of the codepoints passed in `characters` is negative, +/- infinite or `NaN`
+	 * @throws [[InvalidArgumentError]] Thrown when `null` is passed for `character`
+	 * or when any of the codepoints passed in `characters` is negative, +/- infinite or `NaN`
 	 * @throws [[EncodingError]] Thrown when unknown or unsupported `encoding` is passed.
 	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_String_)
 	 */
-	public writeString(value: number[] | string, encoding: Encoding): void {
+	public writeString(value: number[] | string, encoding: Encoding = Encoding.Utf8): void {
 		if (value === null) {
 			throw new InvalidArgumentError('Cannot write null string.', 'value', value);
 		}

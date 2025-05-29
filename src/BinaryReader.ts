@@ -258,19 +258,26 @@ export class BinaryReader {
 	}
 
 	/**
-	 * Reads a `long` (signed 64-bit number) from the stream as a string and advances the stream by eight bytes. The number is returned as string to return
-	 * any precision loss caused by the value being stored in `double` internalle (check the *remarks* for more details).
+	 * Reads a `long` (signed 64-bit number) from the stream as a string and
+	 * advances the stream by eight bytes. The number is returned as string to avoid
+	 * any precision loss caused by the value being stored in `double` internally
+	 * (check the *remarks* for more details).
 	 *
 	 * @remarks
-	 * JavaScript internally uses `double` to represent all numbers. The smallest and largest number that can be represented without loss of precision are,
-	 * respectively, −9,007,199,254,740,991 `−(2^53 − 1)` and 9,007,199,254,740,991 `2^53 − 1`, while `long` can hold values between `-2^63` and `2^63 - 1`, while
-	 * `unsigned long` goes all the way up to `2^64-1`.
+	 * JavaScript internally uses `double` to represent all numbers.
+	 * The smallest and largest number that can be represented without loss
+	 * of precision are, respectively, −9,007,199,254,740,991 `−(2^53 − 1)` and
+	 * 9,007,199,254,740,991 `2^53 − 1`, while `long` can hold values between
+	 * `-2^63` and `2^63 - 1`, while `unsigned long` goes all the way up to `2^64-1`.
 	 *
-	 * What happens when you go beyond those limits is that some numbers just cannot be expressed. `9007199254740992+1` is the same as `9007199254740992+1+1+1+1`
+	 * What happens when you go beyond those limits is that some numbers just
+	 * cannot be expressed. `9007199254740992+1` is the same as `9007199254740992+1+1+1+1`
 	 * and if you try to set a variable to `9007199254740993` it just gets rounded down.
 	 *
-	 * @returns {string} String representing a number between -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @returns {string} String representing a number between
+	 * -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807
+	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left
+	 * in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint64?view=netframework-4.7.2)
 	 */
 	public readLongString(): string {
@@ -316,11 +323,16 @@ export class BinaryReader {
 	}
 
 	/**
-	 * Reads an `unsigned long` (unsigned 64-bit number) from the stream as a string and advances the stream by eight bytes. The number is returned as string to return
-	 * any precision loss caused by the value being stored in `double` internalle, refer to the remark in [[readLongString]] for more details.
+	 * Reads an `unsigned long` (unsigned 64-bit number) from the stream as a
+	 * string and advances the stream by eight bytes. The number is returned
+	 * as a string to avoid any precision loss caused by the value being stored
+	 * in `double` internally, refer to the remark in [[readLongString]] for
+	 * more details.
 	 *
-	 * @returns {string} String representing a number between 0 and 18,446,744,073,709,551,615.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @returns {string} String representing a number between 0 and
+	 * 18,446,744,073,709,551,615.
+	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left
+	 * in the stream. Position of the stream does not change if this exception is thrown.
 	 * @link [C# `BinaryReader.ReadUInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint64?view=netframework-4.7.2)
 	 */
 	public readUnsignedLongString(): string {
@@ -411,7 +423,7 @@ export class BinaryReader {
 	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 * @link [C# `BinaryReader.ReadDouble` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readdouble?view=netframework-4.7.2)
 	 */
-	public readChar(encoding: Encoding): string {
+	public readChar(encoding: Encoding = Encoding.Utf8): string {
 		if (!isValidEncoding(encoding)) {
 			throw new EncodingError(EncodingMessageFactory.unknownEncoding(encoding));
 		}
@@ -438,7 +450,7 @@ export class BinaryReader {
 	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 * @link [C# `BinaryReader.ReadChars` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readchars?view=netframework-4.7.2)
 	 */
-	public readChars(charactersToRead: number, encoding: Encoding): string {
+	public readChars(charactersToRead: number, encoding: Encoding = Encoding.Utf8): string {
 		if (isNaN(charactersToRead)) {
 			throw new InvalidArgumentError('`charactersToRead` is not a number', 'charactersToRead', charactersToRead);
 		}
@@ -475,7 +487,7 @@ export class BinaryReader {
 	 * character sequence in multibyte character encodings. Position of the stream does not change if this exception is thrown.
 	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 */
-	public readCharBytes(bytesToRead: number, encoding: Encoding): string {
+	public readCharBytes(bytesToRead: number, encoding: Encoding = Encoding.Utf8): string {
 		if (isNaN(bytesToRead)) {
 			throw new InvalidArgumentError('`charactersToRead` is not a number', 'bytesToRead', bytesToRead);
 		}
@@ -501,17 +513,22 @@ export class BinaryReader {
 	}
 
 	/**
-	 * Reads a string from the stream that is prefixed with its length, encoded as an integer seven bits at a time.
+	 * Reads a string from the stream that is prefixed with its length, encoded
+	 * as an integer seven bits at a time.
 	 *
 	 * @param {Encoding} encoding The encoding to use when reading the string.
 	 * @returns {string} A string read from the stream.
-	 * @throws [[InvalidArgumentError]] Thrown when `charactersToRead` is not a number nor numeric string or when it is less than 1.
-	 * @throws [[EncodingError]] Thrown when an unknown encoding is provided as the argument.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream or when the lenfth prefix is longer than 5 bytes.
-	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
+	 * @throws [[InvalidArgumentError]] Thrown when `charactersToRead` is not a
+	 * number nor numeric string or when it is less than 1.
+	 * @throws [[EncodingError]] Thrown when an unknown encoding is provided as
+	 * the argument.
+	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left
+	 * in the stream or when the length prefix is longer than 5 bytes.
+	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding
+	 * when an incorrect UTF-8 character sequence is encountered.
 	 * @link [C# `BinaryReader.ReadString` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readstring?view=netframework-4.7.2)
 	 */
-	public readString(encoding: Encoding): string {
+	public readString(encoding: Encoding = Encoding.Utf8): string {
 		if (!isValidEncoding(encoding)) {
 			throw new EncodingError(EncodingMessageFactory.unknownEncoding(encoding));
 		}
