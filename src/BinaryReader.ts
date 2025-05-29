@@ -71,7 +71,7 @@ export class BinaryReader {
 	/**
 	 * Creates a new reader powered by an ArrayBuffer.
 	 *
-	 * @remark
+	 * @remarks
 	 * There is a danger when accessing a `TypedArray`'s
 	 * [`buffer`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/buffer)
 	 * property, because the `TypeArray` is just a view into the `ArrayBuffer`
@@ -120,8 +120,8 @@ export class BinaryReader {
 	 * Reads a `boolean` from the stream and advances the stream by one byte.
 	 *
 	 * @returns {boolean} `false` if it's zero and `true` if it is not zero.
-	 * @throws [[EndOfStreamError]] Thrown when there are no bytes left in the stream.
-	 * @link [C# `BinaryReader.ReadBoolean` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readboolean?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are no bytes left in the stream.
+	 * @see [C# `BinaryReader.ReadBoolean` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readboolean?view=netframework-4.7.2)
 	 */
 	public readBoolean(): boolean {
 		this.assertRemainingBytes(1, 'readBoolean');
@@ -136,8 +136,8 @@ export class BinaryReader {
 	 * Reads a `byte` (unsigned 8-bit number)  from the stream and advances the stream by one byte.
 	 *
 	 * @returns {number} Number between 0 and 255.
-	 * @throws [[EndOfStreamError]] Thrown when there are no bytes left in the stream.
-	 * @link [C# `BinaryReader.ReadByte` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readbyte?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are no bytes left in the stream.
+	 * @see [C# `BinaryReader.ReadByte` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readbyte?view=netframework-4.7.2)
 	 */
 	public readByte(): number {
 		this.assertRemainingBytes(1, 'readByte');
@@ -153,9 +153,9 @@ export class BinaryReader {
 	 *
 	 * @param {number} bytesToRead The number of bytes to read from the stream. must be an integer larger or equal than zero.
 	 * @returns {number[]} Array of bytes (numbers between 0 and 255) read from the stream. If `bytesToRead` is `0` it returns an empty array.
-	 * @throws [[InvalidArgumentError]] when `bytesToRead` is less than zero.
-	 * @throws [[EndOfStreamError]] Thrown when there are no bytes left in the stream.
-	 * @link [C# `BinaryReader.ReadBytes` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readbytes?view=netframework-4.7.2)
+	 * @throws {@link InvalidArgumentError} when `bytesToRead` is less than zero.
+	 * @throws {@link EndOfStreamError} Thrown when there are no bytes left in the stream.
+	 * @see [C# `BinaryReader.ReadBytes` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readbytes?view=netframework-4.7.2)
 	 */
 	public readBytes(bytesToRead: number): number[] {
 		if (bytesToRead < 0) {
@@ -175,8 +175,8 @@ export class BinaryReader {
 	 * Reads a `signed byte` (signed 8-bit number)  from the stream and advances the stream by one byte.
 	 *
 	 * @returns {number} Number between -128 and 127.
-	 * @throws [[EndOfStreamError]] Thrown when there are no bytes left in the stream.
-	 * @link [C# `BinaryReader.ReadSByte` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readsbyte?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are no bytes left in the stream.
+	 * @see [C# `BinaryReader.ReadSByte` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readsbyte?view=netframework-4.7.2)
 	 */
 	public readSignedByte(): number {
 		this.assertRemainingBytes(1, 'readSignedByte');
@@ -193,8 +193,8 @@ export class BinaryReader {
 	 * Reads a `short` (signed 16-bit number) from the stream and advances the stream by two bytes.
 	 *
 	 * @returns {number} Number between -65,536 and 32,767.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
-	 * @link [C# `BinaryReader.ReadInt16` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint16?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @see [C# `BinaryReader.ReadInt16` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint16?view=netframework-4.7.2)
 	 */
 	public readShort(): number {
 		this.assertRemainingBytes(2, 'readShort');
@@ -216,8 +216,8 @@ export class BinaryReader {
 	 * Reads an `unsigned short` (unsigned 16-bit number) from the stream and advances the stream by two bytes.
 	 *
 	 * @returns {number} Number between 0 and 65,535.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
-	 * @link [C# `BinaryReader.ReadUInt16` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint16?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @see [C# `BinaryReader.ReadUInt16` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint16?view=netframework-4.7.2)
 	 */
 	public readUnsignedShort(): number {
 		this.assertRemainingBytes(2, 'readUnsignedShort');
@@ -235,8 +235,8 @@ export class BinaryReader {
 	 * Reads an `int` (signed 32-bit number) from the stream and advances the stream by four bytes.
 	 *
 	 * @returns {number} Number between -2,147,483,648 and 2,147,483,647.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
-	 * @link [C# `BinaryReader.ReadInt32` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint32?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @see [C# `BinaryReader.ReadInt32` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint32?view=netframework-4.7.2)
 	 */
 	public readInt(): number {
 		this.assertRemainingBytes(4, 'readInt');
@@ -266,8 +266,8 @@ export class BinaryReader {
 	 * Reads an `unsigned int` (unsigned 32-bit number) from the stream and advances the stream by four bytes.
 	 *
 	 * @returns {number} Number between 0 and 4,294,967,296.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
-	 * @link [C# `BinaryReader.ReadUInt32` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint32?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @see [C# `BinaryReader.ReadUInt32` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint32?view=netframework-4.7.2)
 	 */
 	public readUnsignedInt(): number {
 		this.assertRemainingBytes(4, 'readUnsignedInt');
@@ -308,9 +308,9 @@ export class BinaryReader {
 	 *
 	 * @returns {string} String representing a number between
 	 * -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left
 	 * in the stream. Position of the stream does not change if this exception is thrown.
-	 * @link [C# `BinaryReader.ReadInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint64?view=netframework-4.7.2)
+	 * @see [C# `BinaryReader.ReadInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint64?view=netframework-4.7.2)
 	 */
 	public readLongString(): string {
 		this.assertRemainingBytes(8, 'readLongString');
@@ -351,11 +351,11 @@ export class BinaryReader {
 
 	/**
 	 * Reads a `long` (signed 64-bit number) from the stream and advances the stream by eight bytes. If the number is too big or too small precision errors
-	 * may occur, refer to the remark in [[readLongString]] for more details.
+	 * may occur, refer to the remark in {@link readLongString} for more details.
 	 *
 	 * @returns {number} Number between -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
-	 * @link [C# `BinaryReader.ReadInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint64?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @see [C# `BinaryReader.ReadInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readint64?view=netframework-4.7.2)
 	 */
 	public readLong(): number {
 		this.assertRemainingBytes(8, 'readLong');
@@ -367,14 +367,14 @@ export class BinaryReader {
 	 * Reads an `unsigned long` (unsigned 64-bit number) from the stream as a
 	 * string and advances the stream by eight bytes. The number is returned
 	 * as a string to avoid any precision loss caused by the value being stored
-	 * in `double` internally, refer to the remark in [[readLongString]] for
+	 * in `double` internally, refer to the remark in {@link readLongString} for
 	 * more details.
 	 *
 	 * @returns {string} String representing a number between 0 and
 	 * 18,446,744,073,709,551,615.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left
 	 * in the stream. Position of the stream does not change if this exception is thrown.
-	 * @link [C# `BinaryReader.ReadUInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint64?view=netframework-4.7.2)
+	 * @see [C# `BinaryReader.ReadUInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint64?view=netframework-4.7.2)
 	 */
 	public readUnsignedLongString(): string {
 		this.assertRemainingBytes(8, 'readUnsignedLongString');
@@ -413,11 +413,11 @@ export class BinaryReader {
 
 	/**
 	 * Reads an `unsigned long` (unsigned 64-bit number) from the stream and advances the stream by eight bytes. If the number is too big precision errors may occur, refer to the remark in
-	 * [[readLongString]] for more details.
+	 * {@link readLongString} for more details.
 	 *
 	 * @returns {number} Number between 0 and 18,446,744,073,709,551,615.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
-	 * @link [C# `BinaryReader.ReadUInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint64?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @see [C# `BinaryReader.ReadUInt64` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readuint64?view=netframework-4.7.2)
 	 */
 	public readUnsignedLong(): number {
 		this.assertRemainingBytes(8, 'readUnsignedLong');
@@ -429,8 +429,8 @@ export class BinaryReader {
 	 * Reads a `float` (single-precision floating-point number) from the stream and advances the stream by four bytes.
 	 *
 	 * @returns {number} Float number
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
-	 * @link [C# `BinaryReader.ReadSingle` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readsingle?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @see [C# `BinaryReader.ReadSingle` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readsingle?view=netframework-4.7.2)
 	 */
 	public readFloat(): number {
 		this.assertRemainingBytes(4, 'readFloat');
@@ -461,8 +461,8 @@ export class BinaryReader {
 	 * Reads a `double` (double-precision floating-point number) from the stream and advances the stream by eight bytes.
 	 *
 	 * @returns {number} Double number
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
-	 * @link [C# `BinaryReader.ReadDouble` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readdouble?view=netframework-4.7.2)
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @see [C# `BinaryReader.ReadDouble` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readdouble?view=netframework-4.7.2)
 	 */
 	public readDouble(): number {
 		this.assertRemainingBytes(8, 'readDouble');
@@ -503,10 +503,10 @@ export class BinaryReader {
 	 *
 	 * @param {Encoding} encoding The encoding to use when reading the chars.
 	 * @returns {string} A single character read from the stream
-	 * @throws [[EncodingError]] Thrown when an unknown encoding is provided as the argument.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
-	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
-	 * @link [C# `BinaryReader.ReadDouble` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readdouble?view=netframework-4.7.2)
+	 * @throws {@link EncodingError} Thrown when an unknown encoding is provided as the argument.
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws {@link InvalidUtf8CharacterError} Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
+	 * @see [C# `BinaryReader.ReadDouble` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readdouble?view=netframework-4.7.2)
 	 */
 	public readChar(encoding: Encoding = Encoding.Utf8): string {
 		if (!isValidEncoding(encoding)) {
@@ -529,11 +529,11 @@ export class BinaryReader {
 	 * @param {number} charactersToRead The number of characters to read from the stream. If the number is fractional it is rounded down. Has to be at least 1.
 	 * @param {Encoding} encoding The encoding to use when reading the chars.
 	 * @returns {string} A string read from the stream.
-	 * @throws [[InvalidArgumentError]] Thrown when `charactersToRead` is not a number nor numeric string or when it is less than 1.
-	 * @throws [[EncodingError]] Thrown when an unknown encoding is provided as the argument.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
-	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
-	 * @link [C# `BinaryReader.ReadChars` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readchars?view=netframework-4.7.2)
+	 * @throws {@link InvalidArgumentError} Thrown when `charactersToRead` is not a number nor numeric string or when it is less than 1.
+	 * @throws {@link EncodingError} Thrown when an unknown encoding is provided as the argument.
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
+	 * @throws {@link InvalidUtf8CharacterError} Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
+	 * @see [C# `BinaryReader.ReadChars` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readchars?view=netframework-4.7.2)
 	 */
 	public readChars(charactersToRead: number, encoding: Encoding = Encoding.Utf8): string {
 		if (isNaN(charactersToRead)) {
@@ -566,11 +566,11 @@ export class BinaryReader {
 	 * @param {number} bytesToRead The number of bytes to read from the stream. If the number is fractional it is rounded down. Has to be at least 1.
 	 * @param {Encoding} encoding The encoding to use when reading the chars.
 	 * @returns {string} A string read from the stream.
-	 * @throws [[InvalidArgumentError]] Thrown when `bytesToRead` is not a number nor numeric string or when it is less than 1.
-	 * @throws [[EncodingError]] Thrown when an unknown encoding is provided as the argument.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left in the stream or when the function stops reading in the middle of a
+	 * @throws {@link InvalidArgumentError} Thrown when `bytesToRead` is not a number nor numeric string or when it is less than 1.
+	 * @throws {@link EncodingError} Thrown when an unknown encoding is provided as the argument.
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream or when the function stops reading in the middle of a
 	 * character sequence in multibyte character encodings. Position of the stream does not change if this exception is thrown.
-	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
+	 * @throws {@link InvalidUtf8CharacterError} Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 */
 	public readCharBytes(bytesToRead: number, encoding: Encoding = Encoding.Utf8): string {
 		if (isNaN(bytesToRead)) {
@@ -603,15 +603,15 @@ export class BinaryReader {
 	 *
 	 * @param {Encoding} encoding The encoding to use when reading the string.
 	 * @returns {string} A string read from the stream.
-	 * @throws [[InvalidArgumentError]] Thrown when `charactersToRead` is not a
+	 * @throws {@link InvalidArgumentError} Thrown when `charactersToRead` is not a
 	 * number nor numeric string or when it is less than 1.
-	 * @throws [[EncodingError]] Thrown when an unknown encoding is provided as
+	 * @throws {@link EncodingError} Thrown when an unknown encoding is provided as
 	 * the argument.
-	 * @throws [[EndOfStreamError]] Thrown when there are not enough bytes left
+	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left
 	 * in the stream or when the length prefix is longer than 5 bytes.
-	 * @throws [[InvalidUtf8CharacterError]] Thrown when using UTF-8 encoding
+	 * @throws {@link InvalidUtf8CharacterError} Thrown when using UTF-8 encoding
 	 * when an incorrect UTF-8 character sequence is encountered.
-	 * @link [C# `BinaryReader.ReadString` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readstring?view=netframework-4.7.2)
+	 * @see [C# `BinaryReader.ReadString` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readstring?view=netframework-4.7.2)
 	 */
 	public readString(encoding: Encoding = Encoding.Utf8): string {
 		if (!isValidEncoding(encoding)) {

@@ -85,7 +85,7 @@ export class BinaryWriter {
 	 *
 	 * @param {number[]} array
 	 * @param {Endianness | undefined} endianness Defaults to Little Endian.
-	 * @throws [[OutOfBoundsError]] Thrown when any of the array elements provided is outside byte range
+	 * @throws {@link OutOfBoundsError} Thrown when any of the array elements provided is outside byte range
 	 */
 	public constructor(array: number[], endianness?: Endianness);
 
@@ -134,7 +134,7 @@ export class BinaryWriter {
 	 * Writes one byte, `0x01` for `true` and `0x00` for `false` and advances
 	 * the position by one byte.
 	 * @param {boolean} value Boolean to write.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Boolean_)
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Boolean_)
 	 */
 	public writeBoolean(value: boolean): void {
 		this._buffer[this._position++] = value ? 1 : 0;
@@ -145,9 +145,9 @@ export class BinaryWriter {
 	/**
 	 * Writes one byte and advances the position by one byte.
 	 * @param {number} value Byte to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0, more
+	 * @throws {@link OutOfBoundsError} Thrown when `value` is less than 0, more
 	 * than 255, +/- infinity or `NaN`.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Byte_)
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Byte_)
 	 */
 	public writeByte(value: number): void {
 		assertNumberSize('byte', Numbers.BYTE.MIN, Numbers.BYTE.MAX, value);
@@ -161,8 +161,8 @@ export class BinaryWriter {
 	 * Writes the same byte multiple times and advances the position by `repeats` bytes.
 	 * @param {number} value Byte to write.
 	 * @param {number} repeats Number of times to write the byte.
-	 * @throws [[InvalidArgumentError]] Thrown when `repeats` is less than 0, +/- infinity or `NaN`.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0, more than 255, +/- infinity or `NaN`.
+	 * @throws {@link InvalidArgumentError} Thrown when `repeats` is less than 0, +/- infinity or `NaN`.
+	 * @throws {@link OutOfBoundsError} Thrown when `value` is less than 0, more than 255, +/- infinity or `NaN`.
 	 */
 	public writeSameByte(value: number, repeats: number): void {
 		if (Number.isNaN(repeats) || !Number.isFinite(repeats) || repeats < 0) {
@@ -180,9 +180,9 @@ export class BinaryWriter {
 	/**
 	 * Writes the passed array of bytes and advances the position by `bytes`'s length.
 	 * @param {number[]} bytes Bytes to write.
-	 * @throws [[OutOfBoundsError]] Thrown when any of the bytes in `bytes` is less
+	 * @throws {@link OutOfBoundsError} Thrown when any of the bytes in `bytes` is less
 	 * than 0, more than 255, +/- infinity or `NaN`.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Byte___)
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Byte___)
 	 */
 	public writeBytes(bytes: number[]): void {
 		for (let i = 0; i < bytes.length; i++) {
@@ -198,9 +198,9 @@ export class BinaryWriter {
 	/**
 	 * Writes a `signed byte` and advances the position by one byte.
 	 * @param {number} value Signed byte to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than -128, more
+	 * @throws {@link OutOfBoundsError} Thrown when `value` is less than -128, more
 	 * than 127, +/- infinity or `NaN`.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_SByte_)
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_SByte_)
 	 */
 	public writeSignedByte(value: number): void {
 		assertNumberSize('signed byte', Numbers.SBYTE.MIN, Numbers.SBYTE.MAX, value);
@@ -213,9 +213,9 @@ export class BinaryWriter {
 	/**
 	 * Writes a `short` and advances the position by two bytes.
 	 * @param {number} value Short to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than -32,768
+	 * @throws {@link OutOfBoundsError} Thrown when `value` is less than -32,768
 	 * more than 32,767, +/- infinity or `NaN`.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Int16_)
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Int16_)
 	 */
 	public writeShort(value: number): void {
 		assertNumberSize('short', Numbers.SHORT.MIN, Numbers.SHORT.MAX, value);
@@ -234,9 +234,9 @@ export class BinaryWriter {
 	/**
 	 * Writes an `unsigned short` and advances the position by two bytes.
 	 * @param {number} value Unsigned short to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0 more than
+	 * @throws {@link OutOfBoundsError} Thrown when `value` is less than 0 more than
 	 * 65,535, +/- infinity or `NaN`.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_UInt16_)
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_UInt16_)
 	 */
 	public writeUnsignedShort(value: number): void {
 		assertNumberSize('unsigned short', Numbers.USHORT.MIN, Numbers.USHORT.MAX, value);
@@ -255,9 +255,9 @@ export class BinaryWriter {
 	/**
 	 * Writes an `int` and advances the position by four bytes.
 	 * @param {number} value Int to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than
+	 * @throws {@link OutOfBoundsError} Thrown when `value` is less than
 	 * -2,147,483,648 more than 2,147,483,647, +/- infinity or `NaN`.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Int32_)
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Int32_)
 	 */
 	public writeInt(value: number): void {
 		assertNumberSize('int', Numbers.INT.MIN, Numbers.INT.MAX, value);
@@ -280,9 +280,9 @@ export class BinaryWriter {
 	/**
 	 * Writes an `unsigned int` and advances the position by four bytes.
 	 * @param {number} value Unsigned int to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0 more than
+	 * @throws {@link OutOfBoundsError} Thrown when `value` is less than 0 more than
 	 * 4,294,967,295 +/- infinity or `NaN`.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_UInt32_)
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_UInt32_)
 	 */
 	public writeUnsignedInt(value: number): void {
 		assertNumberSize('unsigned int', Numbers.UINT.MIN, Numbers.UINT.MAX, value);
@@ -322,9 +322,9 @@ export class BinaryWriter {
 	 * (for 100% precision in very low/high numbers) and number,
 	 * when precision is not a requirement.
 	 *
-	 * @throws [[InvalidArgumentError]] Thrown when `value` is `NaN` or +/- infinite.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than -9,223,372,036,854,775,808 more than 9,223,372,036,854,775,807 +/- infinity or `NaN`.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Int64_)
+	 * @throws {@link InvalidArgumentError} Thrown when `value` is `NaN` or +/- infinite.
+	 * @throws {@link OutOfBoundsError} Thrown when `value` is less than -9,223,372,036,854,775,808 more than 9,223,372,036,854,775,807 +/- infinity or `NaN`.
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Int64_)
 	 */
 	public writeLong(value: number | string): void {
 		if (typeof value === 'number' && (Number.isNaN(value) || !Number.isFinite(value))) {
@@ -367,13 +367,13 @@ export class BinaryWriter {
 	}
 
 	/**
-	 * Writes an `unsigned long` and advances the position by eight bytes. See the remark in [[writeLong]] for details about why strings are preferred.
+	 * Writes an `unsigned long` and advances the position by eight bytes. See the remark in {@link writeLong} for details about why strings are preferred.
 	 *
 	 * @param {number|string} value Unsigned long to write accepted both as a string (for 100% precision in very low/high numbers) and number, when precision is not a
 	 * requirement.
-	 * @throws [[InvalidArgumentError]] Thrown when `value` is `NaN` or +/- infinite.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than 0 more than 18,446,744,073,709,551,615 +/- infinity or `NaN`.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_UInt64_)
+	 * @throws {@link InvalidArgumentError} Thrown when `value` is `NaN` or +/- infinite.
+	 * @throws {@link OutOfBoundsError} Thrown when `value` is less than 0 more than 18,446,744,073,709,551,615 +/- infinity or `NaN`.
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_UInt64_)
 	 */
 	public writeUnsignedLong(value: number | string): void {
 		if (typeof value === 'number' && (Number.isNaN(value) || !Number.isFinite(value))) {
@@ -417,8 +417,8 @@ export class BinaryWriter {
 	/**
 	 * Writes a `float` and advances the position by four bytes.
 	 * @param {boolean} value Float to write.
-	 * @throws [[OutOfBoundsError]] Thrown when `value` is less than -3.4028235e+38 or more than 3.4028235e+38.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Single_)
+	 * @throws {@link OutOfBoundsError} Thrown when `value` is less than -3.4028235e+38 or more than 3.4028235e+38.
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Single_)
 	 */
 	public writeFloat(value: number): void {
 		if (Number.isFinite(value) && !Number.isNaN(value)) {
@@ -464,7 +464,7 @@ export class BinaryWriter {
 	/**
 	 * Writes a `double` and advances the position by eight bytes.
 	 * @param {boolean} value Double to write.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Double_)
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Double_)
 	 */
 	public writeDouble(value: number): void {
 		if (Number.isNaN(value)) {
@@ -503,10 +503,10 @@ export class BinaryWriter {
 	 * @param {number|String} character Unicode codepoint of the character to
 	 * write or a string, in which case only the first character is used.
 	 * @param {Encoding} encoding Character encoding to use when writing the character.
-	 * @throws [[InvalidArgumentError]] Thrown when `null` is passed for `character`
+	 * @throws {@link InvalidArgumentError} Thrown when `null` is passed for `character`
 	 * or when the codepoint passed in `character` is negative, +/- infinite or `NaN`
-	 * @throws [[EncodingError]] Thrown when unknown or unsupported `encoding` is passed.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Char_)
+	 * @throws {@link EncodingError} Thrown when unknown or unsupported `encoding` is passed.
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Char_)
 	 */
 	public writeChar(character: number | string, encoding: Encoding = Encoding.Utf8): void {
 		if (character === null) {
@@ -529,10 +529,10 @@ export class BinaryWriter {
 	 * @param {number[]|String} characters Unicode codepoints of the character
 	 * to write or a string.
 	 * @param {Encoding} encoding Character encoding to use when writing the characters.
-	 * @throws [[InvalidArgumentError]] Thrown when `null` is passed for `character`
+	 * @throws {@link InvalidArgumentError} Thrown when `null` is passed for `character`
 	 * or when any of the codepoints passed in `characters` is negative, +/- infinite or `NaN`
-	 * @throws [[EncodingError]] Thrown when unknown or unsupported `encoding` is passed.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Char___)
+	 * @throws {@link EncodingError} Thrown when unknown or unsupported `encoding` is passed.
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_Char___)
 	 */
 	public writeChars(characters: number[] | string, encoding: Encoding = Encoding.Utf8): void {
 		if (characters === null) {
@@ -554,10 +554,10 @@ export class BinaryWriter {
 	 *
 	 * @param {number[]|String} value Unicode codepoints of the character to write or a string.
 	 * @param {Encoding} encoding Character encoding to use when writing the characters.
-	 * @throws [[InvalidArgumentError]] Thrown when `null` is passed for `character`
+	 * @throws {@link InvalidArgumentError} Thrown when `null` is passed for `character`
 	 * or when any of the codepoints passed in `characters` is negative, +/- infinite or `NaN`
-	 * @throws [[EncodingError]] Thrown when unknown or unsupported `encoding` is passed.
-	 * @link [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_String_)
+	 * @throws {@link EncodingError} Thrown when unknown or unsupported `encoding` is passed.
+	 * @see [C# `BinaryWriter.Write(Boolean)` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binarywriter.write?view=netframework-4.7.2#System_IO_BinaryWriter_Write_System_String_)
 	 */
 	public writeString(value: number[] | string, encoding: Encoding = Encoding.Utf8): void {
 		if (value === null) {

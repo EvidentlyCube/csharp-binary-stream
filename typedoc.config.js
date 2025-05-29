@@ -1,9 +1,7 @@
 module.exports = {
-	src: [
+	entryPoints: [
 		'./src/',
 	],
-	mode: 'file',
-	includeDeclarations: true,
 	tsconfig: 'tsconfig.json',
 	out: './docs',
 	excludePrivate: true,
@@ -11,7 +9,7 @@ module.exports = {
 	excludeExternals: true,
 	readme: 'README.md',
 	name: 'CSharp Binary Stream library',
-	ignoreCompilerErrors: true,
-	plugin: 'typedoc-plugin-as-member-of',
-	listInvalidSymbolLinks: true,
+	validation: {
+		invalidLink: true,
+	}
 };
