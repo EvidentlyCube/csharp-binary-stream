@@ -1,4 +1,4 @@
-# CSharp Binary Stream 
+# CSharp Binary Stream
 
 [![Build Status](https://travis-ci.com/EvidentlyCube/csharp-binary-stream.svg?branch=master)](https://travis-ci.com/EvidentlyCube/csharp-binary-stream)
 
@@ -19,11 +19,11 @@ npm i --save csharp-binary-stream
 
 ### Documentation
 
-The full documentation can be found [here](https://evidentlycube.github.io/chsarp-binary-stream/index.html). 
+The full documentation can be found [here](https://evidentlycube.github.io/chsarp-binary-stream/index.html).
 
 The reader can be used like this:
 
-```
+```js
 import {BinaryReader, Encoding} from `csharp-binary-stream`;
 
 const reader = new BinaryReader(existingArrayBuffer);
@@ -38,7 +38,7 @@ console.log(reader.readFloat());
 
 While the writer like this:
 
-```
+```js
 import {BinaryWriter, Encoding} from `csharp-binary-stream`;
 
 const writer = new BinaryWriter();
@@ -59,7 +59,7 @@ There are some small well-document quirks to be aware of:
 
  - Using `readLong` and `readUnsignedLong` risks losing precision with really big numbers because JavaScript only supports `double` type.
  - Using `writeLong` and `writeUnsignedLong` with numbers instead of strings risks losing precision with really big numbers because JavaScript only supports `double` type.
- 
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
@@ -67,4 +67,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Links
 
  * [NPM](https://www.npmjs.com/package/csharp-binary-stream)
- * [Travis-ci](https://travis-ci.com/EvidentlyCube/csharp-binary-stream) 
+ * [Travis-ci](https://travis-ci.com/EvidentlyCube/csharp-binary-stream)
