@@ -49,14 +49,12 @@ export class BinaryReader {
 	 * Trying to set it to value larger than `length` will set it to `length` instead (the end of the stream).
 	 */
 	public set position(value: number) {
-		if (typeof value !== 'number') {
-			throw new InvalidArgumentError("Cannot set position to a value that is not a number", 'position', value);
-
-		} else if (Number.isNaN(value)) {
-			throw new InvalidArgumentError("Cannot set position to NaN", 'position', value);
-
-		} else if (!Number.isFinite(value)) {
-			throw new InvalidArgumentError("Cannot set position to infinite", 'position', value);
+		if (
+			typeof value !== 'number'
+			|| Number.isNaN(value)
+			|| !Number.isFinite(value)
+		) {
+			throw new InvalidArgumentError("Cannot set position to a non-numeric value", 'position', value);
 		}
 
 		this._position = Math.max(0, Math.min(this._view.length, value));
@@ -106,7 +104,7 @@ export class BinaryReader {
 			this._view = new Uint8Array(stream);
 
 		} else {
-			throw new InvalidArgumentError("Stream is neither instance of ArrayBuffer nor Uint8Array.", 'stream', stream);
+			throw new InvalidArgumentError("`stream` must be either an instance of ArrayBuffer or Uint8Array", 'stream', stream);
 		}
 
 		this.endianness = endianness;
@@ -547,10 +545,7 @@ export class BinaryReader {
 
 		charactersToRead = Math.floor(charactersToRead);
 
-		if (charactersToRead < 1) {
-			return "";
-
-		} else if (this.remainingBytes === 0) {
+		if (this.remainingBytes === 0) {
 			throw new EndOfStreamError(EndOfStreamMessageFactory.readCharZeroBytesLeft());
 		}
 
@@ -586,10 +581,7 @@ export class BinaryReader {
 
 		bytesToRead = Math.floor(bytesToRead);
 
-		if (bytesToRead < 1) {
-			return "";
-
-		} else if (this.remainingBytes === 0) {
+		if (this.remainingBytes === 0) {
 			throw new EndOfStreamError(EndOfStreamMessageFactory.readCharZeroBytesLeft());
 		}
 

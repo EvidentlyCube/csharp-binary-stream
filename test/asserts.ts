@@ -10,6 +10,7 @@ export function expectInvalidArgument(callback: () => void, message: string, arg
 		expect(unknownError).to.instanceOf(InvalidArgumentError);
 
 		const err = unknownError as InvalidArgumentError;
+		expect(err.message).to.equal(message);
 		expect(err.argumentName).to.equal(argumentName);
 
 		if (typeof argumentValue === 'number' && Number.isNaN(argumentValue)) {

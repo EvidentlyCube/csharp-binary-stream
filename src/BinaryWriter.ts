@@ -71,13 +71,11 @@ export class BinaryWriter {
 	}
 
 	public set endianness(value: Endianness) {
-		if (this._endianness !== value) {
-			if (!isValidEndianness(value)) {
-				throw new InvalidArgumentError('`endianness` must be a value from the Endianness enum', 'endianness', value);
-			}
-
-			this._endianness = value;
+		if (!isValidEndianness(value)) {
+			throw new InvalidArgumentError('`endianness` must be a value from the Endianness enum', 'endianness', value);
 		}
+
+		this._endianness = value;
 	}
 
 	/**

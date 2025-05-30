@@ -3,7 +3,7 @@ import { BinaryReader, Encoding, EndOfStreamError, InvalidUtf8CharacterError } f
 import { getBufferArray, getBufferBinary, getBufferHex, getBufferOfLength, getUtf8CharArray } from "./common";
 import * as Utf8 from "../src/Utf8";
 import { EndOfStreamMessageFactory, InvalidUtf8CharacterMessageFactory } from "../src/errors/ErrorMessageFactory";
-import { InvalidArgumentError } from "../src/errors/InvalidArgumentError";
+import { expectInvalidArgument } from './asserts';
 
 const lead2 = Utf8.leadingByteLength2Prefix;
 const lead3 = Utf8.leadingByteLength3Prefix;
@@ -426,7 +426,12 @@ describe("BinaryReader, number negative tests", () => {
 		it("Should fail if trying to read negative bytes", () => {
 			const reader = new BinaryReader(getBufferOfLength(0));
 
-			expect(() => reader.readBytes(-1)).to.throw(InvalidArgumentError);
+			expectInvalidArgument(
+				() => reader.readBytes(-1),
+				'Cannot read less than 0 bytes',
+				'bytesToRead',
+				-1
+			);
 		});
 	})
 });

@@ -268,7 +268,7 @@ describe("BinaryReader, string UTF-8 encoding negative tests", () => {
 
 	describe('InvalidArguments - charactersToRead', () => {
 		for (const [name, value] of Object.entries(getInvalidNumberValues())) {
-			it(`readChar(${name}) - throw InvalidArgument exception`, () => {
+			it(`readChars(${name}) - throw InvalidArgument exception`, () => {
 				const reader = new BinaryReader(getBufferArray([]));
 
 				expectInvalidArgument(

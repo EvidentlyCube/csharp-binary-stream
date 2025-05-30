@@ -4,7 +4,7 @@ import { Endianness } from '../src/Endianness';
 import { arrayToHex } from "./common";
 
 
-type ReadNumberTestCase = [(reader: BinaryWriter, value: number) => void, number, number, string|[string, string]];
+type ReadNumberTestCase = [(reader: BinaryWriter, value: number) => void, number, number, string | [string, string]];
 type ReadStringTestCase = [(reader: BinaryWriter, value: string) => void, string, string, string];
 
 describe("BinaryWriter, endianness", () => {
@@ -16,6 +16,7 @@ describe("BinaryWriter, endianness", () => {
 		writeUnsignedInt: [(r, v) => r.writeUnsignedInt(v), 3506438151, 117440721, '07 00 00 D1'],
 		writeInt: [(r, v) => r.writeInt(v), -788397817, 117506769, '07 01 02 D1'],
 		writeFloat: [(r, v) => r.writeFloat(v), 3.355545997619629, 1546.6953125, '44 C1 56 40'],
+		writeFloatNaN: [(r, v) => r.writeFloat(v), Number.NaN, Number.NaN, ['00 00 C0 FF', 'FF C0 00 00']],
 
 
 		// Long stores values larger than float/double precision allows so unlike other tests we need

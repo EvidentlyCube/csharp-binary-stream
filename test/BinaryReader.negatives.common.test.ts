@@ -1,12 +1,33 @@
 import { expect } from 'chai';
 import { BinaryReader } from "../src";
-import { getBufferOfLength } from "./common";
+import { getBufferOfLength, getInvalidNumberValues } from "./common";
+import { expectInvalidArgument } from './asserts';
 
 describe("BinaryReader, negative common tests", () => {
 	describe('Constructor', () => {
 		it("Throw exception when receiving invalid constructor", () => {
-			// @ts-expect-error: Negative scenario checking
-			expect(() => new BinaryReader(null)).to.throw();
+			const invalidValues = [
+				null,
+				undefined,
+				{},
+				[],
+				false,
+				true,
+				0,
+				"",
+				"0",
+				function () { }
+			];
+
+			for (const value of invalidValues) {
+				expectInvalidArgument(
+					// @ts-expect-error: Negative scenario checking
+					() => new BinaryReader(value),
+					"`stream` must be either an instance of ArrayBuffer or Uint8Array",
+					'stream',
+					value
+				);
+			}
 			// @ts-expect-error: Negative scenario checking
 			expect(() => new BinaryReader(undefined)).to.throw();
 			// @ts-expect-error: Negative scenario checking
@@ -24,26 +45,19 @@ describe("BinaryReader, negative common tests", () => {
 
 	describe('Properties', () => {
 		describe('set position', () => {
-			it('Throw an error when setting to non numeric values', () => {
-				const reader = new BinaryReader(getBufferOfLength(16));
+			for (const [name, value] of Object.entries(getInvalidNumberValues())) {
+				it(`position = ${name}`, () => {
+					const reader = new BinaryReader(getBufferOfLength(16));
 
-				expect(() => reader.position = Number.NaN).to.throw();
-				expect(() => reader.position = Number.NEGATIVE_INFINITY).to.throw();
-				expect(() => reader.position = Number.POSITIVE_INFINITY).to.throw();
-
-				// @ts-expect-error: Negative scenario checking
-				expect(() => reader.position = null).to.throw();
-				// @ts-expect-error: Negative scenario checking
-				expect(() => reader.position = undefined).to.throw();
-				// @ts-expect-error: Negative scenario checking
-				expect(() => reader.position = "").to.throw();
-				// @ts-expect-error: Negative scenario checking
-				expect(() => reader.position = []).to.throw();
-				// @ts-expect-error: Negative scenario checking
-				expect(() => reader.position = {}).to.throw();
-				// @ts-expect-error: Negative scenario checking
-				expect(() => reader.position = function () { }).to.throw();
-			});
+					expectInvalidArgument(
+						// @ts-expect-error: Negative scenario checking
+						() => reader.position = value,
+						"Cannot set position to a non-numeric value",
+						'position',
+						value
+					);
+				});
+			}
 		});
 	});
 });
