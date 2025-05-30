@@ -1,25 +1,39 @@
 import { expect } from 'chai';
-import { BinaryReader } from "../src";
+import { BinaryReader, BinaryWriter } from "../src";
 import { getBufferOfLength } from "./common";
+import { expectInvalidArgument } from './asserts';
 
-describe("BinaryReader, negative common tests", () => {
+describe("BinaryWriter, negative common tests", () => {
 	describe('Constructor', () => {
-		it("Throw exception when receiving invalid constructor", () => {
-			// @ts-expect-error: Negative scenario checking
-			expect(() => new BinaryReader(null)).to.throw();
-			// @ts-expect-error: Negative scenario checking
-			expect(() => new BinaryReader(undefined)).to.throw();
-			// @ts-expect-error: Negative scenario checking
-			expect(() => new BinaryReader({})).to.throw();
-			// @ts-expect-error: Negative scenario checking
-			expect(() => new BinaryReader([])).to.throw();
-			// @ts-expect-error: Negative scenario checking
-			expect(() => new BinaryReader(false)).to.throw();
-			// @ts-expect-error: Negative scenario checking
-			expect(() => new BinaryReader(0)).to.throw();
-			// @ts-expect-error: Negative scenario checking
-			expect(() => new BinaryReader(function () { })).to.throw();
-		})
+		it("new BinaryWriter('invalid') - Exception when invalid endianness value", () => {
+			expectInvalidArgument(
+				// @ts-expect-error: Negative scenario checking
+				() => new BinaryWriter("invalid"),
+				'`endianness` must be a value from the Endianness enum',
+				'endianness',
+				"invalid"
+			);
+		});
+
+		it("new BinaryWriter([], 'invalid') - Exception when invalid endianness value", () => {
+			expectInvalidArgument(
+				// @ts-expect-error: Negative scenario checking
+				() => new BinaryWriter("invalid"),
+				'`endianness` must be a value from the Endianness enum',
+				'endianness',
+				"invalid"
+			);
+		});
+
+		it("new BinaryWriter([], 'invalid') - Exception when invalid endianness value", () => {
+			expectInvalidArgument(
+				// @ts-expect-error: Negative scenario checking
+				() => new BinaryWriter([], "invalid"),
+				'`endianness` must be a value from the Endianness enum',
+				'endianness',
+				"invalid"
+			);
+		});
 	});
 
 	describe('Properties', () => {

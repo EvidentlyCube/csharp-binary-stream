@@ -33,7 +33,10 @@ interface Utf8ReadResult {
  */
 export function writeUtf8StringFromCodePoints(buffer: number[], position: number, dataToWrite: number[] | string): number {
 	if (typeof dataToWrite === "string") {
-		dataToWrite = Array.from(dataToWrite).map(x => x.codePointAt(0));
+		dataToWrite = Array
+			.from(dataToWrite)
+			.map(char => char.codePointAt(0) ?? Number.NaN) as number[]
+
 	}
 
 	for (let i = 0; i < dataToWrite.length; i++) {

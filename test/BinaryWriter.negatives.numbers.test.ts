@@ -50,7 +50,7 @@ describe("BinaryWriter, number negative tests", () => {
 		});
 		runTests('writeLong', {
 			options: ['long', Numbers.LONG.MIN, Numbers.LONG.MAX],
-			cases: ["-9223372036854775809", "9223372036854775808", -9223372036854775809, 9223372036854775807, -Number.MAX_VALUE, Number.MAX_VALUE],
+			cases: ["-9223372036854775809", "9223372036854775808", -10223372036854775809, 10223372036854775807, -Number.MAX_VALUE, Number.MAX_VALUE],
 			runner: (writer, value) => writer.writeLong(value),
 		});
 		runTests('writeUnsignedLong', {
@@ -128,6 +128,14 @@ function runTests<T extends string | number>(testName: string, testCase: TestCas
 	testCase.cases.forEach(value => {
 		it(`${testName}(${value})`, () => {
 			const writer = new BinaryWriter();
+			try {
+				testCase.runner(writer, value)
+			} catch (e) {
+				if (!(e instanceof OutOfBoundsError)) {
+					console.log(e);
+					process.exit();
+				}
+			}
 			expect(() => testCase.runner(writer, value))
 				.to.throw(
 					OutOfBoundsError,

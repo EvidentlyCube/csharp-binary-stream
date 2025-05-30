@@ -52,22 +52,28 @@ describe("BinaryReader, common tests", () => {
 
 		describe("set position", () => {
 			it("Changing position should work", () => {
-				const reader = new BinaryReader(getBufferOfLength(16));
+				const reader = new BinaryReader(buffer);
 				reader.position = 5;
 				expect(reader.position).to.equal(5);
 			});
 
 			it("Setting position to negative value rounds to zero", () => {
-				const reader = new BinaryReader(getBufferOfLength(16));
+				const reader = new BinaryReader(buffer);
 				reader.position = 10;
 				reader.position = -10;
 				expect(reader.position).to.equal(0);
 			});
 
 			it("Setting position past the end value rounds to the end position", () => {
-				const reader = new BinaryReader(getBufferOfLength(16));
+				const reader = new BinaryReader(buffer);
 				reader.position = 200;
-				expect(reader.position).to.equal(16);
+				expect(reader.position).to.equal(BufferLength);
+			});
+
+			it("Cannot set position past the length if using sliced array", () => {
+				const reader = new BinaryReader(arraySlice);
+				reader.position = BufferLength;
+				expect(reader.position).to.equal(SliceLength);
 			});
 		});
 

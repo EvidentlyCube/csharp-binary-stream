@@ -14,30 +14,29 @@ describe("BinaryWriter, endianness", () => {
 		writeUnsignedShort: [(r, v) => r.writeUnsignedShort(v), 53511, 2001, '07 D1'],
 		writeShort: [(r, v) => r.writeShort(v), -12025, 2001, '07 D1'],
 		writeUnsignedInt: [(r, v) => r.writeUnsignedInt(v), 3506438151, 117440721, '07 00 00 D1'],
-		writeInt: [(r, v) => r.writeInt(v), -788529145, 117440721, '07 00 00 D1'],
+		writeInt: [(r, v) => r.writeInt(v), -788397817, 117506769, '07 01 02 D1'],
 		writeFloat: [(r, v) => r.writeFloat(v), 3.355545997619629, 1546.6953125, '44 C1 56 40'],
 
 
 		// Long stores values larger than float/double precision allows so unlike other tests we need
-		// different values for each endianness. `parseInt()` is used to avoid
-		// IDE warnings
+		// different values for each endianness. `parseInt()` is used to avoid IDE warnings
 		writeLong: [
 			(r, v) => r.writeLong(v),
-			parseInt('-4611686018427388000'),
-			parseInt('504403158265495740'),
-			['00 00 00 00 00 00 00 C0', '07 00 00 00 00 00 00 C0']
+			parseInt('-504686844217801937'),
+			parseInt('504686845217801937'),
+			['40 C3 95 37 FD FD FE F8', '07 01 02 03 04 05 06 C0']
 		],
 		writeUnsignedLong: [
 			(r, v) => r.writeUnsignedLong(v),
-			parseInt('4611686018427388000'),
-			parseInt('504403158265495740'),
-			['00 00 00 00 00 00 00 40', '07 00 00 00 00 00 00 C0']
+			parseInt('15061731518565584100'),
+			parseInt('504686845217801937'),
+			['00 10 68 02 04 05 06 D1', '07 01 02 03 04 05 06 C0']
 		],
 	};
 
 	const stringTestCases: Record<string, ReadStringTestCase> = {
-		writeLongString: [(r, v) => r.writeLong(v), '-3386706919782612985', '504403158265495761', '07 00 00 00 00 00 00 D1'],
-		writeUnsignedLongString: [(r, v) => r.writeUnsignedLong(v), '15060037153926938631', '504403158265495761', '07 00 00 00 00 00 00 D1'],
+		writeLongString: [(r, v) => r.writeLong(v), '-3385012555133878009', '504686845217801937', '07 01 02 03 04 05 06 D1'],
+		writeUnsignedLongString: [(r, v) => r.writeUnsignedLong(v), '15061731518575673607', '504686845217801937', '07 01 02 03 04 05 06 D1'],
 	};
 
 	describe("Endianness test for writing numbers", () => {

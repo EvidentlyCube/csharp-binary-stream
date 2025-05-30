@@ -109,3 +109,20 @@ export function combineBuffers(...buffers: BufferLike[]): number[] {
 
 	}).reduce((sum, next) => sum.concat(next));
 }
+
+export function getInvalidNumberValues(): Record<string, unknown> {
+	return {
+		"NaN": Number.NaN,
+		"-INFINITY": Number.NEGATIVE_INFINITY,
+		"+INFINITY": Number.POSITIVE_INFINITY,
+		"NULL": null,
+		"UNDEFINED": undefined,
+		"FALSE": false,
+		"TRUE": true,
+		"Empty string": "",
+		'""': "0",
+		"Array": [],
+		"Object": {},
+		"Function": function(){}
+	};
+}

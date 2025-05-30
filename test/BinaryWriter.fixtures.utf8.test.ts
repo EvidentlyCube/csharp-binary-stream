@@ -54,15 +54,15 @@ function buildTestExecutors(): WriterTestCallbackDictionaryDictionary {
 		string: {
 			'oneBytePrefix': function* (writer) {
 				yield writer.writeString(testStrings[0], Encoding.Utf8);
-				yield writer.writeString(Array.from(testStrings[0]).map(x => x.codePointAt(0)), Encoding.Utf8);
+				yield writer.writeString(Array.from(testStrings[0]).map(x => x.codePointAt(0) ?? -1), Encoding.Utf8);
 			},
 			'twoBytePrefix': function* (writer) {
 				yield writer.writeString(testStrings[1], Encoding.Utf8);
-				yield writer.writeString(Array.from(testStrings[1]).map(x => x.codePointAt(0)), Encoding.Utf8);
+				yield writer.writeString(Array.from(testStrings[1]).map(x => x.codePointAt(0) ?? -1), Encoding.Utf8);
 			},
 			'threeBytePrefix': function* (writer) {
 				yield writer.writeString(testStrings[2], Encoding.Utf8);
-				yield writer.writeString(Array.from(testStrings[2]).map(x => x.codePointAt(0)), Encoding.Utf8);
+				yield writer.writeString(Array.from(testStrings[2]).map(x => x.codePointAt(0) ?? -1), Encoding.Utf8);
 			},
 		},
 	};

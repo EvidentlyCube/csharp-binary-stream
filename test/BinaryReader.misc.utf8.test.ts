@@ -25,6 +25,12 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 			expect(reader.position).to.equal(4);
 		});
 
+		it("readChars - do not advance if reading 0 bytes", () => {
+			const reader = new BinaryReader(getBufferArray(getUtf8CharArray(4, 16)));
+			reader.readChars(0, Encoding.Utf8);
+			expect(reader.position).to.equal(0);
+		})
+
 		it("readChars - advance by 4 bytes when four 1-byte chars", () => {
 			const array = [
 				...getUtf8CharArray(1),
@@ -80,6 +86,12 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 			reader.readChars(4, Encoding.Utf8);
 			expect(reader.position).to.equal(16);
 		});
+
+		it("readChars - do not advance if reading 0 bytes", () => {
+			const reader = new BinaryReader(getBufferArray(getUtf8CharArray(4, 16)));
+			reader.readCharBytes(0, Encoding.Utf8);
+			expect(reader.position).to.equal(0);
+		})
 
 		it("readCharBytes - advance by 4 bytes", () => {
 			const array = [
@@ -166,5 +178,17 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 			expect(reader.readCharBytes(1.1, Encoding.Utf8)).to.have.length(1);
 			expect(reader.readCharBytes(16.9, Encoding.Utf8)).to.have.length(16);
 		});
+	});
+
+	describe('Special cases', () => {
+		it('readChars - return empty string if reading 0 characters', () => {
+			const reader = new BinaryReader(getBufferArray(getUtf8CharArray(4, 16)));
+			expect(reader.readChars(0)).to.equal('');
+		})
+
+		it('readCharBytes - return empty string if reading 0 characters', () => {
+			const reader = new BinaryReader(getBufferArray(getUtf8CharArray(4, 16)));
+			expect(reader.readCharBytes(0)).to.equal('');
+		})
 	});
 });

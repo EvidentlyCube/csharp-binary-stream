@@ -1,4 +1,3 @@
-import * as bigInt from 'big-integer';
 import { Encoding, isValidEncoding } from "./Encoding";
 import { writeUtf8StringFromCodePoints } from "./Utf8";
 import { OutOfBoundsError } from "./errors/OutOfBoundsError";
@@ -20,9 +19,9 @@ function assertNumberSize(type: string, minValue: number, maxValue: number, give
 /**
  * @ignore
  */
-function assertBigIntSize(type: string, minValue: string, maxValue: string, givenValue: string): void {
-	const givenBigInt = bigInt(givenValue);
-	if (givenBigInt.lesser(minValue) || givenBigInt.greater(maxValue)) {
+function assertBigIntSize(type: string, minValue: string, maxValue: string, givenValue: number | string): void {
+	const givenBigInt = BigInt(givenValue);
+	if (givenBigInt < BigInt(minValue) || givenBigInt > BigInt(maxValue)) {
 		throw new OutOfBoundsError(OutOfBoundsMessageFactory.numberOutsideRange(type, minValue, maxValue, givenValue));
 	}
 }
@@ -42,7 +41,7 @@ export class BinaryWriter {
 	/**
 	 * Endianness of all the write operations
 	 */
-	public endianness: Endianness;
+	private _endianness: Endianness;
 
 	/**
 	 * Length of the written data in bytes
@@ -65,6 +64,20 @@ export class BinaryWriter {
 	 */
 	public set position(value: number) {
 		this._position = Math.max(0, Math.min(this._length, value));
+	}
+
+	public get endianness() {
+		return this._endianness;
+	}
+
+	public set endianness(value: Endianness) {
+		if (this._endianness !== value) {
+			if (!isValidEndianness(value)) {
+				throw new InvalidArgumentError('`endianness` must be a value from the Endianness enum', 'endianness', value);
+			}
+
+			this._endianness = value;
+		}
 	}
 
 	/**
@@ -106,27 +119,32 @@ export class BinaryWriter {
 	public constructor(arg1?: number[] | Uint8Array | Endianness, arg2?: Endianness) {
 		this._position = 0;
 
-		const endiannessArg = arg2 ?? arg1;
-
-		if (endiannessArg !== undefined && typeof endiannessArg === 'number' && isValidEndianness(endiannessArg)) {
-			this.endianness = endiannessArg;
-		} else {
-			this.endianness = Endianness.Little;
-		}
-
+		this._endianness = Endianness.Little;
 
 		if (Array.isArray(arg1)) {
 			this._buffer = new Array(arg1.length);
 			this._length = 0;
 			this.writeBytes(arg1);
 
+			if (arg2) {
+				this.endianness = arg2;
+			}
+
 		} else if (arg1 instanceof Uint8Array) {
 			this._buffer = Array.from(arg1);
 			this._length = this._buffer.length;
 
+			if (arg2) {
+				this.endianness = arg2;
+			}
+
 		} else {
 			this._buffer = [];
 			this._length = 0;
+
+			if (arg1) {
+				this.endianness = arg1;
+			}
 		}
 	}
 
@@ -331,36 +349,34 @@ export class BinaryWriter {
 			throw new InvalidArgumentError('Value cannot be infinite or NaN', 'value', value);
 		}
 
-		assertBigIntSize('long', Numbers.LONG.MIN, Numbers.LONG.MAX, value.toString());
+		assertBigIntSize('long', Numbers.LONG.MIN, Numbers.LONG.MAX, value);
 
-		const bigint = typeof value === "number"
-			? bigInt(value)
-			: bigInt(value);
+		const bigint = BigInt(value);
 
-		const leftHalf = bigint.and(0xFFFFFFFF).toJSNumber();
-		const rightHalf = bigint.shiftRight(32).and(0xFFFFFFFF).toJSNumber();
+		const smallHalf = Number(bigint & BigInt(0xFFFFFFFF))
+		const bigHalf = Number((bigint >> BigInt(32)) & BigInt(0xFFFFFFFF))
 
 		if (this.endianness === Endianness.Little) {
-			this._buffer[this._position++] = leftHalf & 0xFF;
-			this._buffer[this._position++] = (leftHalf >> 8 & 0xFF);
-			this._buffer[this._position++] = (leftHalf >> 16 & 0xFF);
-			this._buffer[this._position++] = (leftHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = smallHalf & 0xFF;
+			this._buffer[this._position++] = (smallHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = (smallHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (smallHalf >> 24 & 0xFF);
 
-			this._buffer[this._position++] = rightHalf & 0xFF;
-			this._buffer[this._position++] = (rightHalf >> 8 & 0xFF);
-			this._buffer[this._position++] = (rightHalf >> 16 & 0xFF);
-			this._buffer[this._position++] = (rightHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = bigHalf & 0xFF;
+			this._buffer[this._position++] = (bigHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = (bigHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (bigHalf >> 24 & 0xFF);
 
 		} else {
-			this._buffer[this._position++] = (rightHalf >> 24 & 0xFF);
-			this._buffer[this._position++] = (rightHalf >> 16 & 0xFF);
-			this._buffer[this._position++] = (rightHalf >> 8 & 0xFF);
-			this._buffer[this._position++] = rightHalf & 0xFF;
+			this._buffer[this._position++] = (bigHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = (bigHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (bigHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = bigHalf & 0xFF;
 
-			this._buffer[this._position++] = (leftHalf >> 24 & 0xFF);
-			this._buffer[this._position++] = (leftHalf >> 16 & 0xFF);
-			this._buffer[this._position++] = (leftHalf >> 8 & 0xFF);
-			this._buffer[this._position++] = leftHalf & 0xFF;
+			this._buffer[this._position++] = (smallHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = (smallHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (smallHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = smallHalf & 0xFF;
 		}
 
 		this._length = Math.max(this._length, this._position);
@@ -380,35 +396,33 @@ export class BinaryWriter {
 			throw new InvalidArgumentError('Value cannot be infinite or NaN', 'value', value);
 		}
 
-		assertBigIntSize('unsigned long', Numbers.ULONG.MIN, Numbers.ULONG.MAX, value.toString());
+		assertBigIntSize('unsigned long', Numbers.ULONG.MIN, Numbers.ULONG.MAX, value);
 
-		const bigint = typeof value === "number"
-			? bigInt(value)
-			: bigInt(value);
+		const bigint = BigInt(value);
 
-		const leftHalf = bigint.and(0xFFFFFFFF).toJSNumber();
-		const rightHalf = bigint.shiftRight(32).and(0xFFFFFFFF).toJSNumber();
+		const smallHalf = Number(bigint & BigInt(0xFFFFFFFF))
+		const bigHalf = Number((bigint >> BigInt(32)) & BigInt(0xFFFFFFFF))
 
 		if (this.endianness === Endianness.Little) {
-			this._buffer[this._position++] = leftHalf & 0xFF;
-			this._buffer[this._position++] = (leftHalf >> 8 & 0xFF);
-			this._buffer[this._position++] = (leftHalf >> 16 & 0xFF);
-			this._buffer[this._position++] = (leftHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = smallHalf & 0xFF;
+			this._buffer[this._position++] = (smallHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = (smallHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (smallHalf >> 24 & 0xFF);
 
-			this._buffer[this._position++] = rightHalf & 0xFF;
-			this._buffer[this._position++] = (rightHalf >> 8 & 0xFF);
-			this._buffer[this._position++] = (rightHalf >> 16 & 0xFF);
-			this._buffer[this._position++] = (rightHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = bigHalf & 0xFF;
+			this._buffer[this._position++] = (bigHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = (bigHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (bigHalf >> 24 & 0xFF);
 		} else {
-			this._buffer[this._position++] = (rightHalf >> 24 & 0xFF);
-			this._buffer[this._position++] = (rightHalf >> 16 & 0xFF);
-			this._buffer[this._position++] = (rightHalf >> 8 & 0xFF);
-			this._buffer[this._position++] = rightHalf & 0xFF;
+			this._buffer[this._position++] = (bigHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = (bigHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (bigHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = bigHalf & 0xFF;
 
-			this._buffer[this._position++] = (leftHalf >> 24 & 0xFF);
-			this._buffer[this._position++] = (leftHalf >> 16 & 0xFF);
-			this._buffer[this._position++] = (leftHalf >> 8 & 0xFF);
-			this._buffer[this._position++] = leftHalf & 0xFF;
+			this._buffer[this._position++] = (smallHalf >> 24 & 0xFF);
+			this._buffer[this._position++] = (smallHalf >> 16 & 0xFF);
+			this._buffer[this._position++] = (smallHalf >> 8 & 0xFF);
+			this._buffer[this._position++] = smallHalf & 0xFF;
 		}
 
 		this._length = Math.max(this._length, this._position);
@@ -517,7 +531,13 @@ export class BinaryWriter {
 			throw new EncodingError(EncodingMessageFactory.unknownEncoding(encoding));
 		}
 
-		this._position = writeUtf8StringFromCodePoints(this._buffer, this._position, typeof character === "number" ? [character] : [character.codePointAt(0)]);
+		this._position = writeUtf8StringFromCodePoints(
+			this._buffer,
+			this._position,
+			typeof character === "number"
+				? [character]
+				: [character.codePointAt(0) ?? Number.NaN]
+		);
 
 		this._length = Math.max(this._length, this._position);
 	}

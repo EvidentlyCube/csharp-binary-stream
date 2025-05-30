@@ -136,7 +136,6 @@ describe("BinaryWriter, number fixture tests", () => {
 		const tests = entry[1];
 
 		describe(type, () => {
-
 			Object.entries(tests).forEach(test => {
 				const testName = test[0];
 				const testPath = test[1];

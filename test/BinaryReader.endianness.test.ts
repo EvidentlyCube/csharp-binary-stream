@@ -12,14 +12,14 @@ describe("BinaryReader, endianness", () => {
 		readSignedByte: ['D1', r => r.readSignedByte(), -47, -47],
 		readUnsignedShort: ['07 D1', r => r.readUnsignedShort(), 53511, 2001],
 		readShort: ['07 D1', r => r.readShort(), -12025, 2001],
-		readUnsignedInt: ['07 00 00 D1', r => r.readUnsignedInt(), 3506438151, 117440721],
-		readInt: ['07 00 00 D1', r => r.readInt(), -788529145, 117440721],
-		readLongString: ['07 00 00 00 00 00 00 D1', r => r.readLongString(), '-3386706919782612985', '504403158265495761'],
-		readLong: ['07 00 00 00 00 00 00 D1', r => r.readLong(), parseInt('-3386706919782612985'), parseInt('504403158265495761')],
-		readUnsignedLongString: ['07 00 00 00 00 00 00 D1', r => r.readUnsignedLongString(), '15060037153926938631', '504403158265495761'],
-		readUnsignedLong: ['07 00 00 00 00 00 00 D1', r => r.readUnsignedLong(), parseInt('15060037153926938631'), parseInt('504403158265495761')],
+		readUnsignedInt: ['07 01 02 D1', r => r.readUnsignedInt(), 3506569479, 117506769],
+		readInt: ['07 01 02 D1', r => r.readInt(), -788397817, 117506769],
+		readLongString: ['07 01 02 03 04 05 06 D1', r => r.readLongString(), '-3385012555133878009', '504686845217801937'],
+		readLong: ['07 01 02 03 04 05 06 D1', r => r.readLong(), parseInt('-3385012555133878000'), parseInt('504686845217801900')],
+		readUnsignedLongString: ['07 01 02 03 04 05 06 D1', r => r.readUnsignedLongString(), '15061731518575673607', '504686845217801937'],
+		readUnsignedLong: ['07 01 02 03 04 05 06 D1', r => r.readUnsignedLong(), parseInt('15061731518575673000'), parseInt('504686845217801900')],
 		readFloat: ['44 c1 56 40', r => r.readFloat(), 3.355545997619629, 1546.6953125],
-		readDouble: ['40 98 2a c8 00 10 04 02', r => r.readDouble(), 5.991555993870602e-299, 1546.6953127386519],
+		readDouble: ['40 98 2a c8 01 10 04 02', r => r.readDouble(), 5.991560550821864e-299, 1546.6953165533491],
 	};
 
 	describe("Endianness test for reading numbers", () => {

@@ -1,0 +1,5 @@
+{
+  "extension": ["ts", "tsx"],
+  "spec": ["test/**/*.test.ts"],
+  "require": ["./test/init.js"]
+}

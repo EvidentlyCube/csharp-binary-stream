@@ -9,11 +9,13 @@
 		"declaration": true,
 		"allowJs": false,
 		"strict": true,
-		"strictNullChecks": false,
+		"strictNullChecks": true,
+		"noUnusedLocals": true,
+		"noImplicitReturns": true,
 		"rootDir": "src"
 	},
 	"include": [
-		"./src"
+		"./src",
 	],
 	"exclude": [
 		"node_modules",

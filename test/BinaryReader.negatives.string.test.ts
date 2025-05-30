@@ -3,7 +3,6 @@ import { BinaryReader, Encoding, EndOfStreamError } from "../src";
 import { getBufferBinary, getBufferOfLength } from "./common";
 import { EncodingMessageFactory, EndOfStreamMessageFactory } from "../src/errors/ErrorMessageFactory";
 import { EncodingError } from "../src/errors/EncodingError";
-import { InvalidArgumentError } from "../src/errors/InvalidArgumentError";
 
 describe("BinaryReader, string negative tests", () => {
 	const invalidEncodings = ['utf7', 'not an encoding'];
@@ -29,26 +28,6 @@ describe("BinaryReader, string negative tests", () => {
 
 				expect(() => reader.readString(encoding as Encoding)).to.throw(EncodingError, EncodingMessageFactory.unknownEncoding(encoding));
 			});
-		});
-	});
-
-	describe('Invalid arguments', () => {
-		it("readChars - error wheh `charactersToRead` is less than 1", () => {
-			const reader = new BinaryReader(getBufferOfLength(0));
-
-			expect(() => reader.readChars(0.9, Encoding.Utf8)).to.throw(InvalidArgumentError);
-			expect(() => reader.readChars(0, Encoding.Utf8)).to.throw(InvalidArgumentError);
-			expect(() => reader.readChars(-1, Encoding.Utf8)).to.throw(InvalidArgumentError);
-			expect(() => reader.readChars(-100, Encoding.Utf8)).to.throw(InvalidArgumentError);
-		});
-
-		it("readCharBytes - error wheh `charactersToRead` is less than 1", () => {
-			const reader = new BinaryReader(getBufferOfLength(0));
-
-			expect(() => reader.readCharBytes(0.9, Encoding.Utf8)).to.throw(InvalidArgumentError);
-			expect(() => reader.readCharBytes(0, Encoding.Utf8)).to.throw(InvalidArgumentError);
-			expect(() => reader.readCharBytes(-1, Encoding.Utf8)).to.throw(InvalidArgumentError);
-			expect(() => reader.readCharBytes(-100, Encoding.Utf8)).to.throw(InvalidArgumentError);
 		});
 	});
 

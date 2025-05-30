@@ -1,8 +1,9 @@
 import { expect } from 'chai';
 import { BinaryReader, Encoding, EndOfStreamError, InvalidUtf8CharacterError } from "../src";
-import { getBufferArray, getBufferBinary, getBufferHex, getBufferOfLength, getUtf8CharArray } from "./common";
+import { getBufferArray, getBufferBinary, getBufferHex, getBufferOfLength, getInvalidNumberValues, getUtf8CharArray } from "./common";
 import * as Utf8 from "../src/Utf8";
 import { EndOfStreamMessageFactory, InvalidUtf8CharacterMessageFactory } from "../src/errors/ErrorMessageFactory";
+import { expectInvalidArgument } from './asserts';
 
 const lead2 = Utf8.leadingByteLength2Prefix;
 const lead3 = Utf8.leadingByteLength3Prefix;
@@ -263,5 +264,33 @@ describe("BinaryReader, string UTF-8 encoding negative tests", () => {
 
 			expect(() => reader.readChar(Encoding.Utf8)).to.throw(InvalidUtf8CharacterError, InvalidUtf8CharacterMessageFactory.notContinuationByte(0, 3, 0xFF));
 		});
+	});
+
+	describe('InvalidArguments - charactersToRead', () => {
+		for (const [name, value] of Object.entries(getInvalidNumberValues())) {
+			it(`readChar(${name}) - throw InvalidArgument exception`, () => {
+				const reader = new BinaryReader(getBufferArray([]));
+
+				expectInvalidArgument(
+					// @ts-expect-error: Negative scenario checking
+					() => reader.readChars(value),
+					"`charactersToRead` is not a number",
+					'charactersToRead',
+					value
+				);
+			});
+
+			it(`readCharBytes(${name}) - throw InvalidArgument exception`, () => {
+				const reader = new BinaryReader(getBufferArray([]));
+
+				expectInvalidArgument(
+					// @ts-expect-error: Negative scenario checking
+					() => reader.readCharBytes(value),
+					"`bytesToRead` is not a number",
+					'bytesToRead',
+					value
+				);
+			});
+		}
 	});
 });

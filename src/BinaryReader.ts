@@ -15,11 +15,6 @@ import { Endianness } from "./Endianness";
  */
 export class BinaryReader {
 	/**
-	 * The actual stream used for reading. Keep in mind it can be larger than the view.
-	 */
-	private _stream: ArrayBuffer;
-
-	/**
 	 * A view into the buffer.
 	 */
 	private _view: Uint8Array;
@@ -64,7 +59,7 @@ export class BinaryReader {
 			throw new InvalidArgumentError("Cannot set position to infinite", 'position', value);
 		}
 
-		this._position = Math.max(0, Math.min(this._stream.byteLength, value));
+		this._position = Math.max(0, Math.min(this._view.length, value));
 	}
 
 	/**
@@ -107,13 +102,8 @@ export class BinaryReader {
 	 * @param {Endianness | undefined} endianness Defaults to Little Endian.
 	 */
 	public constructor(stream: ArrayBuffer | Uint8Array, endianness: Endianness = Endianness.Little) {
-		if (stream instanceof ArrayBuffer) {
-			this._stream = stream;
+		if (stream instanceof ArrayBuffer || stream instanceof Uint8Array) {
 			this._view = new Uint8Array(stream);
-
-		} else if (stream instanceof Uint8Array) {
-			this._stream = stream.buffer;
-			this._view = stream;
 
 		} else {
 			throw new InvalidArgumentError("Stream is neither instance of ArrayBuffer nor Uint8Array.", 'stream', stream);
@@ -544,21 +534,23 @@ export class BinaryReader {
 	 * @see [C# `BinaryReader.ReadChars` documentation](https://docs.microsoft.com/en-us/dotnet/api/system.io.binaryreader.readchars?view=netframework-4.7.2)
 	 */
 	public readChars(charactersToRead: number, encoding: Encoding = Encoding.Utf8): string {
-		if (isNaN(charactersToRead)) {
+		if (
+			typeof charactersToRead !== 'number'
+			|| Number.isNaN(charactersToRead)
+			|| !Number.isFinite(charactersToRead)
+		) {
 			throw new InvalidArgumentError('`charactersToRead` is not a number', 'charactersToRead', charactersToRead);
+
+		} else if (!isValidEncoding(encoding)) {
+			throw new EncodingError(EncodingMessageFactory.unknownEncoding(encoding));
 		}
 
 		charactersToRead = Math.floor(charactersToRead);
 
 		if (charactersToRead < 1) {
-			throw new InvalidArgumentError('`charactersToRead` cannot be less than 0', 'charactersToRead', charactersToRead);
-		}
+			return "";
 
-		if (!isValidEncoding(encoding)) {
-			throw new EncodingError(EncodingMessageFactory.unknownEncoding(encoding));
-		}
-
-		if (this.remainingBytes === 0) {
+		} else if (this.remainingBytes === 0) {
 			throw new EndOfStreamError(EndOfStreamMessageFactory.readCharZeroBytesLeft());
 		}
 
@@ -581,21 +573,23 @@ export class BinaryReader {
 	 * @throws {@link InvalidUtf8CharacterError} Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
 	 */
 	public readCharBytes(bytesToRead: number, encoding: Encoding = Encoding.Utf8): string {
-		if (isNaN(bytesToRead)) {
-			throw new InvalidArgumentError('`charactersToRead` is not a number', 'bytesToRead', bytesToRead);
+		if (
+			typeof bytesToRead !== 'number'
+			|| Number.isNaN(bytesToRead)
+			|| !Number.isFinite(bytesToRead)
+		) {
+			throw new InvalidArgumentError('`bytesToRead` is not a number', 'bytesToRead', bytesToRead);
+
+		} else if (!isValidEncoding(encoding)) {
+			throw new EncodingError(EncodingMessageFactory.unknownEncoding(encoding));
 		}
 
 		bytesToRead = Math.floor(bytesToRead);
 
 		if (bytesToRead < 1) {
-			throw new InvalidArgumentError('`charactersToRead` cannot be less than 0', 'bytesToRead', bytesToRead);
-		}
+			return "";
 
-		if (!isValidEncoding(encoding)) {
-			throw new EncodingError(EncodingMessageFactory.unknownEncoding(encoding));
-		}
-
-		if (this.remainingBytes === 0) {
+		} else if (this.remainingBytes === 0) {
 			throw new EndOfStreamError(EndOfStreamMessageFactory.readCharZeroBytesLeft());
 		}
 

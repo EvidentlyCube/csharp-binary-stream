@@ -26,6 +26,7 @@ describe("BinaryWriter, string negative tests", () => {
 		});
 		it("writeChars - invalid argument on null", () => {
 			const writer = new BinaryWriter();
+			// @ts-expect-error: Negative scenario checking
 			expect(() => writer.writeChars(null, Encoding.Utf8)).to.throw(InvalidArgumentError);
 		});
 		it("writeChars - invalid argument on NaN", () => {
