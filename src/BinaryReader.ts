@@ -521,10 +521,12 @@ export class BinaryReader {
 	/**
 	 * Reads multiple characters from the string, the number of bytes read dependant on the encoding used.
 	 *
-	 * @param {number} charactersToRead The number of characters to read from the stream. If the number is fractional it is rounded down. Has to be at least 1.
+	 * @param {number} charactersToRead The number of characters to read from the
+	 * stream. If the number is fractional it is rounded down. If it the number
+	 * is less than 0 it returns an empty string.
 	 * @param {Encoding} encoding The encoding to use when reading the chars.
 	 * @returns {string} A string read from the stream.
-	 * @throws {@link InvalidArgumentError} Thrown when `charactersToRead` is not a number nor numeric string or when it is less than 1.
+	 * @throws {@link InvalidArgumentError} Thrown when `charactersToRead` is not a valid number.
 	 * @throws {@link EncodingError} Thrown when an unknown encoding is provided as the argument.
 	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream. Position of the stream does not change if this exception is thrown.
 	 * @throws {@link InvalidUtf8CharacterError} Thrown when using UTF-8 encoding when an incorrect UTF-8 character sequence is encountered.
@@ -557,10 +559,12 @@ export class BinaryReader {
 	/**
 	 * Reads the specified number of bytes in the provided encoding and advances the stream by that number.
 	 *
-	 * @param {number} bytesToRead The number of bytes to read from the stream. If the number is fractional it is rounded down. Has to be at least 1.
+	 * @param {number} bytesToRead The number of bytes to read from the stream.
+	 * If the number is fractional it is rounded down. Has to be at least 1. If
+	 * it the number  is less than 0 it returns an empty string.
 	 * @param {Encoding} encoding The encoding to use when reading the chars.
 	 * @returns {string} A string read from the stream.
-	 * @throws {@link InvalidArgumentError} Thrown when `bytesToRead` is not a number nor numeric string or when it is less than 1.
+	 * @throws {@link InvalidArgumentError} Thrown when `bytesToRead` is not a number.
 	 * @throws {@link EncodingError} Thrown when an unknown encoding is provided as the argument.
 	 * @throws {@link EndOfStreamError} Thrown when there are not enough bytes left in the stream or when the function stops reading in the middle of a
 	 * character sequence in multibyte character encodings. Position of the stream does not change if this exception is thrown.
