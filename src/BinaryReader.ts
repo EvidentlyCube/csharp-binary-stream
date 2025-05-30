@@ -14,9 +14,19 @@ import { Endianness } from "./Endianness";
  * Any time the word _stream_ is used in the documentation it refers to the `ArrayBuffer` provided in the constructor of this class.
  */
 export class BinaryReader {
+	/**
+	 * The actual stream used for reading. Keep in mind it can be larger than the view.
+	 */
 	private _stream: ArrayBuffer;
+
+	/**
+	 * A view into the buffer.
+	 */
 	private _view: Uint8Array;
 
+	/**
+	 * Current reading position in the stream.
+	 */
 	private _position: number;
 
 	/**
@@ -65,7 +75,7 @@ export class BinaryReader {
 	}
 
 	/**
-	 * @ignore
+	 * Number of bytes remaining to be read.
 	 */
 	public get remainingBytes(): number {
 		return this.length - this.position;
