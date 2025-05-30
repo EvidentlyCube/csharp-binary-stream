@@ -1,6 +1,6 @@
 {
   "name": "csharp-binary-stream",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Library compatible with C#'s BinaryReader class",
   "main": "dist/index.js",
   "files": [

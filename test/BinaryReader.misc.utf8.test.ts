@@ -26,13 +26,13 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 		});
 
 		it("readChars - advance by 4 bytes when four 1-byte chars", () => {
-			const array = [].concat(
-				getUtf8CharArray(1),
-				getUtf8CharArray(1),
-				getUtf8CharArray(1),
-				getUtf8CharArray(1),
-				new Array(16),
-			);
+			const array = [
+				...getUtf8CharArray(1),
+				...getUtf8CharArray(1),
+				...getUtf8CharArray(1),
+				...getUtf8CharArray(1),
+				...new Array<number>(16),
+			];
 
 			const reader = new BinaryReader(getBufferArray(array));
 			reader.readChars(4, Encoding.Utf8);
@@ -40,13 +40,13 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 		});
 
 		it("readChars - advance by 8 bytes when four 2-byte chars", () => {
-			const array = [].concat(
-				getUtf8CharArray(2),
-				getUtf8CharArray(2),
-				getUtf8CharArray(2),
-				getUtf8CharArray(2),
-				new Array(16),
-			);
+			const array = [
+				...getUtf8CharArray(2),
+				...getUtf8CharArray(2),
+				...getUtf8CharArray(2),
+				...getUtf8CharArray(2),
+				...new Array(16),
+			];
 
 			const reader = new BinaryReader(getBufferArray(array));
 			reader.readChars(4, Encoding.Utf8);
@@ -54,13 +54,13 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 		});
 
 		it("readChars - advance by 12 bytes when four 3-byte chars", () => {
-			const array = [].concat(
-				getUtf8CharArray(3),
-				getUtf8CharArray(3),
-				getUtf8CharArray(3),
-				getUtf8CharArray(3),
-				new Array(16),
-			);
+			const array = [
+				...getUtf8CharArray(3),
+				...getUtf8CharArray(3),
+				...getUtf8CharArray(3),
+				...getUtf8CharArray(3),
+				...new Array(16),
+			];
 
 			const reader = new BinaryReader(getBufferArray(array));
 			reader.readChars(4, Encoding.Utf8);
@@ -68,13 +68,13 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 		});
 
 		it("readChars - advance by 16 bytes when four 4-byte chars", () => {
-			const array = [].concat(
-				getUtf8CharArray(4),
-				getUtf8CharArray(4),
-				getUtf8CharArray(4),
-				getUtf8CharArray(4),
-				new Array(16),
-			);
+			const array = [
+				...getUtf8CharArray(4),
+				...getUtf8CharArray(4),
+				...getUtf8CharArray(4),
+				...getUtf8CharArray(4),
+				...new Array(16),
+			];
 
 			const reader = new BinaryReader(getBufferArray(array));
 			reader.readChars(4, Encoding.Utf8);
@@ -82,13 +82,13 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 		});
 
 		it("readCharBytes - advance by 4 bytes", () => {
-			const array = [].concat(
-				getUtf8CharArray(1),
-				getUtf8CharArray(1),
-				getUtf8CharArray(1),
-				getUtf8CharArray(1),
-				new Array(16),
-			);
+			const array = [
+				...getUtf8CharArray(1),
+				...getUtf8CharArray(1),
+				...getUtf8CharArray(1),
+				...getUtf8CharArray(1),
+				...new Array(16),
+			];
 
 			const reader = new BinaryReader(getBufferArray(array));
 			reader.readCharBytes(4, Encoding.Utf8);
@@ -96,13 +96,13 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 		});
 
 		it("readCharBytes - advance by 8 bytes", () => {
-			const array = [].concat(
-				getUtf8CharArray(2),
-				getUtf8CharArray(2),
-				getUtf8CharArray(2),
-				getUtf8CharArray(2),
-				new Array(16),
-			);
+			const array = [
+				...getUtf8CharArray(2),
+				...getUtf8CharArray(2),
+				...getUtf8CharArray(2),
+				...getUtf8CharArray(2),
+				...new Array(16),
+			];
 
 			const reader = new BinaryReader(getBufferArray(array));
 			reader.readCharBytes(8, Encoding.Utf8);
@@ -110,13 +110,13 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 		});
 
 		it("readCharBytes - advance by 12 bytes", () => {
-			const array = [].concat(
-				getUtf8CharArray(3),
-				getUtf8CharArray(3),
-				getUtf8CharArray(3),
-				getUtf8CharArray(3),
-				new Array(16),
-			);
+			const array = [
+				...getUtf8CharArray(3),
+				...getUtf8CharArray(3),
+				...getUtf8CharArray(3),
+				...getUtf8CharArray(3),
+				...new Array(16),
+			];
 
 			const reader = new BinaryReader(getBufferArray(array));
 			reader.readCharBytes(12, Encoding.Utf8);
@@ -124,13 +124,13 @@ describe("BinaryReader, string UTF-8 encoding misc tests", () => {
 		});
 
 		it("readCharBytes - advance by 16 bytes", () => {
-			const array = [].concat(
-				getUtf8CharArray(4),
-				getUtf8CharArray(4),
-				getUtf8CharArray(4),
-				getUtf8CharArray(4),
-				new Array(16),
-			);
+			const array = [
+				...getUtf8CharArray(4),
+				...getUtf8CharArray(4),
+				...getUtf8CharArray(4),
+				...getUtf8CharArray(4),
+				...new Array(16),
+			];
 
 			const reader = new BinaryReader(getBufferArray(array));
 			reader.readCharBytes(16, Encoding.Utf8);

@@ -19,9 +19,6 @@ export class BinaryReader {
 
 	private _position: number;
 
-	private _bufferStart: number;
-	private _bufferLength: number;
-
 	/**
 	 * Endianness of all the read operations
 	 */
@@ -31,7 +28,7 @@ export class BinaryReader {
 	 * Length of the stream, in bytes loaded, into the reader.
 	 */
 	public get length(): number {
-		return this._bufferLength;
+		return this._view.length
 	}
 
 	/**
@@ -47,24 +44,30 @@ export class BinaryReader {
 	 * Trying to set it to value larger than `length` will set it to `length` instead (the end of the stream).
 	 */
 	public set position(value: number) {
+		if (typeof value !== 'number') {
+			throw new InvalidArgumentError("Cannot set position to a value that is not a number", 'position', value);
+
+		} else if (Number.isNaN(value)) {
+			throw new InvalidArgumentError("Cannot set position to NaN", 'position', value);
+
+		} else if (!Number.isFinite(value)) {
+			throw new InvalidArgumentError("Cannot set position to infinite", 'position', value);
+		}
+
 		this._position = Math.max(0, Math.min(this._stream.byteLength, value));
 	}
 
 	/**
-	 * Returns true if the `position` of the stream is past the final byte (equal to `length`).
+	 * Returns whether {@link position} is past the final byte (equal to {@link length})
 	 */
 	public get isEndOfStream(): boolean {
-		return this._position >= this._stream.byteLength;
-	}
-
-	private get internalPosition(): number {
-		return this._position + this._bufferStart;
+		return this.position >= this.length;
 	}
 
 	/**
 	 * @ignore
 	 */
-	private get remainingBytes(): number {
+	public get remainingBytes(): number {
 		return this.length - this.position;
 	}
 
@@ -94,19 +97,14 @@ export class BinaryReader {
 	 * @param {Endianness | undefined} endianness Defaults to Little Endian.
 	 */
 	public constructor(stream: ArrayBuffer | Uint8Array, endianness: Endianness = Endianness.Little) {
-		this.endianness
-
 		if (stream instanceof ArrayBuffer) {
 			this._stream = stream;
 			this._view = new Uint8Array(stream);
-			this._bufferStart = 0;
-			this._bufferLength = this._stream.byteLength;
 
 		} else if (stream instanceof Uint8Array) {
 			this._stream = stream.buffer;
 			this._view = stream;
-			this._bufferStart = stream.byteOffset;
-			this._bufferLength = stream.byteLength;
+
 		} else {
 			throw new InvalidArgumentError("Stream is neither instance of ArrayBuffer nor Uint8Array.", 'stream', stream);
 		}
@@ -249,13 +247,13 @@ export class BinaryReader {
 
 		const int = this.endianness === Endianness.Little
 			? byte4 * 256 * 256 * 256
-				+ byte3 * 256 * 256
-				+ byte2 * 256
-				+ byte1
+			+ byte3 * 256 * 256
+			+ byte2 * 256
+			+ byte1
 			: byte1 * 256 * 256 * 256
-				+ byte2 * 256 * 256
-				+ byte3 * 256
-				+ byte4;
+			+ byte2 * 256 * 256
+			+ byte3 * 256
+			+ byte4;
 
 		return int < 2147483648
 			? int
@@ -280,13 +278,13 @@ export class BinaryReader {
 
 		return this.endianness === Endianness.Little
 			? byte4 * 256 * 256 * 256
-				+ byte3 * 256 * 256
-				+ byte2 * 256
-				+ byte1
+			+ byte3 * 256 * 256
+			+ byte2 * 256
+			+ byte1
 			: byte1 * 256 * 256 * 256
-				+ byte2 * 256 * 256
-				+ byte3 * 256
-				+ byte4;
+			+ byte2 * 256 * 256
+			+ byte3 * 256
+			+ byte4;
 	}
 
 	/**
@@ -335,7 +333,7 @@ export class BinaryReader {
 				.add(bigInt(byte6).multiply(m256.pow(5)))
 				.add(bigInt(byte7).multiply(m256.pow(6)))
 				.add(bigInt(byte8).multiply(m256.pow(7)))
-			:  bigInt(byte8)
+			: bigInt(byte8)
 				.add(bigInt(byte7).multiply(m256))
 				.add(bigInt(byte6).multiply(m256.pow(2)))
 				.add(bigInt(byte5).multiply(m256.pow(3)))
@@ -399,7 +397,7 @@ export class BinaryReader {
 				.add(bigInt(byte6).multiply(m256.pow(5)))
 				.add(bigInt(byte7).multiply(m256.pow(6)))
 				.add(bigInt(byte8).multiply(m256.pow(7)))
-			:  bigInt(byte8)
+			: bigInt(byte8)
 				.add(bigInt(byte7).multiply(m256))
 				.add(bigInt(byte6).multiply(m256.pow(2)))
 				.add(bigInt(byte5).multiply(m256.pow(3)))

@@ -1,9 +1,9 @@
 import * as Utf8 from '../src/Utf8';
 
 export function getBufferOfLength(length: number): ArrayBuffer {
-	const uint8Array = new Uint8Array(length);
+	const array = new Uint8Array(length);
 
-	return uint8Array.buffer.slice(uint8Array.byteOffset, uint8Array.byteOffset + uint8Array.byteLength);
+	return array.buffer.slice(array.byteOffset, array.byteOffset + array.byteLength);
 }
 
 export function getBufferArray(bytes: number[]): ArrayBuffer {
@@ -72,7 +72,7 @@ export function writeUtf8Character(array: number[], position: number, charLength
 		array[position + 3] = Utf8.continuationBytePrefix;
 
 	} else {
-		throw new Error(`Invalid char lengt=${charLength} given.`);
+		throw new Error(`Invalid char length=${charLength} given.`);
 	}
 }
 
@@ -85,7 +85,8 @@ export function getUtf8CharArray(charLength: number, totalBufferLength?: number)
 		throw new Error(`Total buffer length=${totalBufferLength} is less than char length=${charLength}`);
 	}
 
-	const buffer = new Array(totalBufferLength);
+	const buffer: number[] = [];
+	buffer.length = charLength;
 
 	writeUtf8Character(buffer, 0, charLength);
 
