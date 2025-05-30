@@ -45,8 +45,5 @@
     "typedoc": "^0.28.5",
     "typedoc-twilio-theme": "^1.0.0",
     "typescript": "^5.8.3"
-  },
-  "dependencies": {
-    "big-integer": "^1.6.43"
   }
 }

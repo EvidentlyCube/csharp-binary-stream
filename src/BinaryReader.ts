@@ -1,5 +1,4 @@
 import { Encoding, isValidEncoding } from "./Encoding";
-import * as bigInt from 'big-integer';
 import { EndOfStreamError } from "./errors/EndOfStreamError";
 import * as Utf8 from './Utf8';
 import * as Int7 from './Int7';
@@ -321,28 +320,28 @@ export class BinaryReader {
 		const byte8 = this._view[this._position + 7];
 		this._position += 8;
 
-		const m256 = bigInt(256);
+		const m256 = BigInt(256);
 		const long = this.endianness === Endianness.Little
-			? bigInt(byte1)
-				.add(bigInt(byte2).multiply(m256))
-				.add(bigInt(byte3).multiply(m256.pow(2)))
-				.add(bigInt(byte4).multiply(m256.pow(3)))
-				.add(bigInt(byte5).multiply(m256.pow(4)))
-				.add(bigInt(byte6).multiply(m256.pow(5)))
-				.add(bigInt(byte7).multiply(m256.pow(6)))
-				.add(bigInt(byte8).multiply(m256.pow(7)))
-			: bigInt(byte8)
-				.add(bigInt(byte7).multiply(m256))
-				.add(bigInt(byte6).multiply(m256.pow(2)))
-				.add(bigInt(byte5).multiply(m256.pow(3)))
-				.add(bigInt(byte4).multiply(m256.pow(4)))
-				.add(bigInt(byte3).multiply(m256.pow(5)))
-				.add(bigInt(byte2).multiply(m256.pow(6)))
-				.add(bigInt(byte1).multiply(m256.pow(7)))
+			? BigInt(byte1)
+				+ (BigInt(byte2) * m256)
+				+ (BigInt(byte3) * (m256 ** BigInt(2)))
+				+ (BigInt(byte4) * (m256 ** BigInt(3)))
+				+ (BigInt(byte5) * (m256 ** BigInt(4)))
+				+ (BigInt(byte6) * (m256 ** BigInt(5)))
+				+ (BigInt(byte7) * (m256 ** BigInt(6)))
+				+ (BigInt(byte8) * (m256 ** BigInt(7)))
+			: BigInt(byte8)
+				+ (BigInt(byte7) * m256)
+				+ (BigInt(byte6) * (m256 ** BigInt(2)))
+				+ (BigInt(byte5) * (m256 ** BigInt(3)))
+				+ (BigInt(byte4) * (m256 ** BigInt(4)))
+				+ (BigInt(byte3) * (m256 ** BigInt(5)))
+				+ (BigInt(byte2) * (m256 ** BigInt(6)))
+				+ (BigInt(byte1) * (m256 ** BigInt(7)))
 
-		return long.lesser("9223372036854775808")
+		return long < BigInt("9223372036854775808")
 			? long.toString()
-			: long.subtract("18446744073709551616").toString();
+			: (long - BigInt("18446744073709551616")).toString();
 	}
 
 	/**
@@ -385,24 +384,24 @@ export class BinaryReader {
 		const byte8 = this._view[this._position + 7];
 		this._position += 8;
 
-		const m256 = bigInt(256);
+		const m256 = BigInt(256);
 		const long = this.endianness === Endianness.Little
-			? bigInt(byte1)
-				.add(bigInt(byte2).multiply(m256))
-				.add(bigInt(byte3).multiply(m256.pow(2)))
-				.add(bigInt(byte4).multiply(m256.pow(3)))
-				.add(bigInt(byte5).multiply(m256.pow(4)))
-				.add(bigInt(byte6).multiply(m256.pow(5)))
-				.add(bigInt(byte7).multiply(m256.pow(6)))
-				.add(bigInt(byte8).multiply(m256.pow(7)))
-			: bigInt(byte8)
-				.add(bigInt(byte7).multiply(m256))
-				.add(bigInt(byte6).multiply(m256.pow(2)))
-				.add(bigInt(byte5).multiply(m256.pow(3)))
-				.add(bigInt(byte4).multiply(m256.pow(4)))
-				.add(bigInt(byte3).multiply(m256.pow(5)))
-				.add(bigInt(byte2).multiply(m256.pow(6)))
-				.add(bigInt(byte1).multiply(m256.pow(7)));
+			? BigInt(byte1)
+				+ (BigInt(byte2) * m256)
+				+ (BigInt(byte3) * (m256 ** BigInt(2)))
+				+ (BigInt(byte4) * (m256 ** BigInt(3)))
+				+ (BigInt(byte5) * (m256 ** BigInt(4)))
+				+ (BigInt(byte6) * (m256 ** BigInt(5)))
+				+ (BigInt(byte7) * (m256 ** BigInt(6)))
+				+ (BigInt(byte8) * (m256 ** BigInt(7)))
+			: BigInt(byte8)
+				+ (BigInt(byte7) * m256)
+				+ (BigInt(byte6) * (m256 ** BigInt(2)))
+				+ (BigInt(byte5) * (m256 ** BigInt(3)))
+				+ (BigInt(byte4) * (m256 ** BigInt(4)))
+				+ (BigInt(byte3) * (m256 ** BigInt(5)))
+				+ (BigInt(byte2) * (m256 ** BigInt(6)))
+				+ (BigInt(byte1) * (m256 ** BigInt(7)))
 
 		return long.toString();
 	}
